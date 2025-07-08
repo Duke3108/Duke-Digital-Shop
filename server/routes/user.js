@@ -1,5 +1,5 @@
 import express from 'express'
-import { register, login, getCurrentUser, refreshAccessToken, logout, forgotPassword, resetPassword, getAllUsers, deleteUser, updateUser, updateUserByAdmin } from '../controllers/user.js'
+import { register, login, getCurrentUser, refreshAccessToken, logout, forgotPassword, resetPassword, getAllUsers, deleteUser, updateUser, updateUserByAdmin, updateAddressUser, updateCart } from '../controllers/user.js'
 import { isAdmin, verifyAccessToken } from '../middlewares/verifyToken.js'
 
 const userRouter = express.Router()
@@ -14,6 +14,8 @@ userRouter.put('/resetpassword', resetPassword)
 userRouter.get('/', [verifyAccessToken, isAdmin], getAllUsers)
 userRouter.delete('/', [verifyAccessToken, isAdmin], deleteUser)
 userRouter.put('/current', verifyAccessToken, updateUser)
+userRouter.put('/cart', [verifyAccessToken], updateCart)
+userRouter.put('/address', [verifyAccessToken], updateAddressUser)
 userRouter.put('/:uid', [verifyAccessToken, isAdmin], updateUserByAdmin)
 
 export default userRouter

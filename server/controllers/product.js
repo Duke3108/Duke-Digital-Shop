@@ -24,11 +24,54 @@ export const getProduct = asyncHandler(async (req, res) => {
 })
 
 export const getAllProducts = asyncHandler(async (req, res) => {
-    const product = await Product.find()
-    return res.status(200).json({
-        success: product ? true : false,
-        productsData: product ? product : 'Cannot get products'
-    })
+    const queries = { ...req.query }
+    //tách các trường đặc biệt ra khỏi query
+    const excludeFields = ['limit', 'sort', 'page', 'fields']
+    excludeFields.forEach(el => delete queries[el])
+
+    //format lại các operators cho đúng cú pháp mongo
+    let queryString = JSON.stringify(queries)
+    queryString = queryString.replace(/\b(gte|gt|lt|lte)\b/g, macthedEl => `$${macthedEl}`)
+    const formatedQueries = JSON.parse(queryString)
+
+    //filtering
+    if (queries?.title) formatedQueries.title = { $regex: queries.title, $options: 'i' } //regex tìm theo tên ko cần đầy đủ, option để viết chữ tường vẫn tìm được
+    let queryCommand = Product.find(formatedQueries)//promise bending
+
+    //sorting
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(',').join(' ')
+        queryCommand = queryCommand.sort(sortBy)
+    }
+
+    //Fields limiting
+    if (req.query.fields) {
+        const fields = req.query.fields.split(',').join(' ')
+        queryCommand = queryCommand.select(fields)
+    }
+
+    //pagination
+    //limit: số object lấy về 1 lần gọi api
+    const page = +req.query.page || 1
+    const limit = +req.query.limit || process.env.LIMIT_PRODUCT
+    const skip = (page - 1) * limit
+    queryCommand.skip(skip).limit(limit)
+
+    //execute query
+    //số lượng sp thỏa mãn điều kiện !== số lượng sp trả về 1 lần gọi api
+    queryCommand.exec()
+        .then(async (response) => {
+            const counts = await Product.find(formatedQueries).countDocuments();
+            return res.status(200).json({
+                success: response ? true : false,
+                counts,
+                products: response ? response : 'Cannot get products',
+            });
+        })
+        .catch((err) => {
+            throw new Error(err.message);
+        });
+
 })
 
 export const updateProduct = asyncHandler(async (req, res) => {
@@ -47,5 +90,45 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     return res.status(200).json({
         success: deletedProduct ? true : false,
         deletedProduct: deletedProduct ? deletedProduct : 'Cannot delete products'
+    })
+})
+
+export const rating = asyncHandler(async (req, res) => {
+    const { _id } = req.user
+    const { star, comment, pid } = req.body
+    if (!star || !pid) throw new Error('Mising inputs')
+    const ratingProduct = await Product.findById(pid)
+    const alreadyRating = ratingProduct?.rating?.find(el => el.postedBy.toString() === _id)
+    if (alreadyRating) {
+        //update start and comment
+        await Product.updateOne({
+            _id: pid, "rating.postedBy": _id
+        }, {
+            $set: { 'rating.$.star': star, 'rating.$.comment': comment, }
+        }, { new: true })
+    } else {
+        //add start and comment
+        await Product.findByIdAndUpdate(pid, { $push: { rating: { star, comment, postedBy: _id } } }, { new: true })
+    }
+
+    //total rating
+    const updatedProduct = await Product.findById(pid)
+    const ratingCount = updatedProduct.rating.length
+    const sumStarRating = updatedProduct.rating.reduce((sum, el) => sum + +el.star, 0)
+    updatedProduct.totalRatings = Math.round(sumStarRating * 10 / ratingCount) / 10
+
+    return res.status(200).json({
+        status: true,
+        updatedProduct
+    })
+})
+
+export const uploadImagesProduct = asyncHandler(async (req, res) => {
+    const { pid } = req.params
+    if (!req.files) throw new Error('Mising inputs')
+    const response = await Product.findByIdAndUpdate(pid, { $push: { images: { $each: req.files.map(el => el.path) } } }, { new: true })
+    return res.status(200).json({
+        status: response ? true : false,
+        updatedProduct: response ? response : 'Can not update image'
     })
 })

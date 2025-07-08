@@ -3,8 +3,13 @@ import 'dotenv/config'
 import dbConnect from './config/dbconnect.js'
 import initRoutes from './routes/index.js'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 const app = express()
+app.use(cors({
+    origin: process.env.URL_CLIENT,
+    methods: ['POST', 'PUT', 'GET', 'DELETE']
+}))
 const port = process.env.PORT || 8888
 app.use(cookieParser())
 app.use(express.json())
