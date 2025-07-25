@@ -9,9 +9,11 @@ const { IoIosArrowForward } = icons
 const Home = () => {
     const [newProducts, setNewProduct] = useState(null)
     const { categories } = useSelector(state => state.app)
+    //const { isLoggedIn, current } = useSelector(state => state.user)
+
     const fetchProducts = async () => {
-        const response = await Promise.all([apiGetProducts({ sort: '-sold' }), apiGetProducts({ sort: '-createdAt' })])
-        if (response[1]?.success) setNewProduct(response[1].products)
+        const response = await apiGetProducts({ sort: '-createdAt' })
+        if (response?.success) setNewProduct(response.products)
     }
 
     useEffect(() => {
@@ -19,7 +21,7 @@ const Home = () => {
     }, [])
     return (
         <>
-            <div className='flex w-main'>
+            <div className='flex mt-6 w-main'>
                 <div className='flex flex-col gap-5 w-[25%] flex-auto'>
                     <Sidebar />
                     <DealDaily />
@@ -30,10 +32,10 @@ const Home = () => {
                 </div>
 
             </div>
-            <div className='my-8'>
+            <div className='my-8 w-main'>
                 <FeatureProducts />
             </div>
-            <div className='w-full my-8'>
+            <div className='my-8 w-main'>
                 <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main'>
                     HÀNG MỚI VỀ</h3>
                 <div className='mt-4 mx-[-10px]'>
@@ -42,7 +44,7 @@ const Home = () => {
                     />
                 </div>
             </div>
-            <div className='w-full my-8'>
+            <div className='my-8 w-main'>
                 <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main'>HÀNG HOT</h3>
                 <div className='flex flex-wrap gap-4 mt-4'>
                     {categories?.filter(el => el.brand.length > 0)?.map((el, index) => (
@@ -58,7 +60,7 @@ const Home = () => {
                                         {el?.brand?.map((item, index) => (
                                             <span key={index} className='flex items-center gap-1 text-gray-500'>
                                                 <IoIosArrowForward size={14} />
-                                                <li key={index}>{item}</li>
+                                                <li>{item}</li>
                                             </span>
                                         ))}
                                     </ul>
@@ -68,7 +70,7 @@ const Home = () => {
                     ))}
                 </div>
             </div>
-            <div className='w-full my-8'>
+            <div className='my-8 w-main'>
                 <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main'>BLOG POST</h3>
             </div>
         </>

@@ -4,6 +4,28 @@ import { generateAccessToken, generateRefreshToken } from '../middlewares/jwt.js
 import jwt from 'jsonwebtoken'
 import sendMail from '../ultils/sendMail.js'
 import crypto from 'crypto'
+import makeToken from 'uniqid'
+
+// export const register = asyncHandler(async (req, res) => {
+//     const { email, password, name, mobile } = req.body
+//     if (!email || !password || !name || !mobile) {
+//         return res.status(400).json({
+//             success: false,
+//             mes: 'missing inputs'
+//         })
+//     }
+
+//     const user = await User.findOne({ email })
+//     if (user)
+//         throw new Error('User has existed')
+//     else {
+//         const newUser = await User.create(req.body)
+//         return res.status(200).json({
+//             success: newUser ? true : false,
+//             mes: newUser ? 'Register is successful' : 'something went wrong'
+//         })
+//     }
+// })
 
 export const register = asyncHandler(async (req, res) => {
     const { email, password, name, mobile } = req.body
@@ -13,17 +35,53 @@ export const register = asyncHandler(async (req, res) => {
             mes: 'missing inputs'
         })
     }
-
     const user = await User.findOne({ email })
     if (user)
         throw new Error('User has existed')
     else {
-        const newUser = await User.create(req.body)
-        return res.status(200).json({
-            success: newUser ? true : false,
-            mes: newUser ? 'Register is successful' : 'something went wrong'
+        const token = makeToken()
+        res.cookie('dataregister', { ...req.body, token }, {
+            httpOnly: true,
+            maxAge: 15 * 60 * 1000,
+            sameSite: 'lax',
+            secure: false
+        })
+        const html = `Xin vui lòng nhấn vào link dưới đây để hoàn tất quá trình đăng ký. 
+    Link này se hết hạn sau 15 phút. <a href=${process.env.URL_SERVER}/api/user/finalregister/${token}>Click here</a>`
+
+        const data = {
+            email,
+            html,
+            subject: 'Hoàn tất đăng ký'
+        }
+
+        await sendMail(data)
+        return res.json({
+            success: true,
+            mes: 'please check your email'
         })
     }
+
+})
+
+export const finalRegister = asyncHandler(async (req, res) => {
+    const cookie = req.cookies
+    const { token } = req.params
+    console.log(token)
+    console.log(cookie)
+    if (!cookie || cookie?.dataregister?.token !== token) {
+        res.clearCookie('dataregister')
+        return res.redirect(`${process.env.URL_CLIENT}/finalregister/failed`)
+    }
+    const newUser = await User.create({
+        email: cookie?.dataregister?.email,
+        password: cookie?.dataregister?.password,
+        name: cookie?.dataregister?.name,
+        mobile: cookie?.dataregister?.mobile,
+    })
+    res.clearCookie('dataregister')
+    if (newUser) return res.redirect(`${process.env.URL_CLIENT}/finalregister/success`)
+    else return res.redirect(`${process.env.URL_CLIENT}/finalregister/failed`)
 })
 
 export const login = asyncHandler(async (req, res) => {
@@ -110,19 +168,26 @@ export const logout = asyncHandler(async (req, res) => {
 })
 
 export const forgotPassword = asyncHandler(async (req, res) => {
-    const { email } = req.query
+    const { email } = req.body
     if (!email) throw new Error('Missing email')
     const user = await User.findOne({ email })
     if (!user) throw new Error('User not found')
     const resetToken = user.createPasswordChangeToken()
     await user.save()
 
-    const html = `Xin vui long click vao link duoi day de thay doi mat khau. Link nay se het han sau 15 phut. <a href=${process.env.URL_SERVER}/api/user/reset-password/${resetToken}>Click here</a>`
+    const html = `Xin vui long click vao link duoi day de thay doi mat khau. 
+    Link nay se het han sau 15 phut. <a href=${process.env.URL_CLIENT}/reset-password/${resetToken}>Click here</a>`
 
-    const rs = await sendMail(email, html)
+    const data = {
+        email,
+        html,
+        subject: 'Forgot password'
+    }
+
+    const rs = await sendMail(data)
     return res.status(200).json({
         success: true,
-        rs
+        mes: rs ? 'Vui lòng kiểm tra email của bạn' : 'Something went wrong'
     })
 })
 

@@ -16,7 +16,13 @@ export const createProduct = asyncHandler(async (req, res) => {
 
 export const getProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params
-    const product = await Product.findById(pid)
+    const product = await Product.findById(pid).populate({
+        path: 'rating',
+        populate: {
+            path: 'postedBy',
+            select: 'name avatar'
+        }
+    })
     return res.status(200).json({
         success: product ? true : false,
         productData: product ? product : 'Cannot get product'
@@ -32,11 +38,19 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     //format lại các operators cho đúng cú pháp mongo
     let queryString = JSON.stringify(queries)
     queryString = queryString.replace(/\b(gte|gt|lt|lte)\b/g, macthedEl => `$${macthedEl}`)
-    const formatedQueries = JSON.parse(queryString)
+    const restQueries = JSON.parse(queryString)
+    let formatedQueries = {}
+    if (queries?.color) {
+        delete restQueries.color
+        const colorQuery = queries.color?.split(',').map(el => ({ color: { $regex: el, $options: 'i' } }))
+        formatedQueries = { $or: colorQuery }
+    }
 
     //filtering
-    if (queries?.title) formatedQueries.title = { $regex: queries.title, $options: 'i' } //regex tìm theo tên ko cần đầy đủ, option để viết chữ tường vẫn tìm được
-    let queryCommand = Product.find(formatedQueries)//promise bending
+    if (queries?.title) restQueries.title = { $regex: queries.title, $options: 'i' } //regex tìm theo tên ko cần đầy đủ, option để viết chữ tường vẫn tìm được
+    if (queries?.category) restQueries.category = { $regex: queries.category, $options: 'i' } //regex tìm theo category ko cần đầy đủ, option để viết chữ tường vẫn tìm được
+    const q = { ...formatedQueries, ...restQueries }
+    let queryCommand = Product.find(q)//promise bending
 
     //sorting
     if (req.query.sort) {
@@ -61,7 +75,7 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     //số lượng sp thỏa mãn điều kiện !== số lượng sp trả về 1 lần gọi api
     queryCommand.exec()
         .then(async (response) => {
-            const counts = await Product.find(formatedQueries).countDocuments();
+            const counts = await Product.find(q).countDocuments();
             return res.status(200).json({
                 success: response ? true : false,
                 counts,
@@ -69,7 +83,10 @@ export const getAllProducts = asyncHandler(async (req, res) => {
             });
         })
         .catch((err) => {
-            throw new Error(err.message);
+            return res.status(500).json({
+                success: false,
+                message: err.message
+            });
         });
 
 })
@@ -95,7 +112,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
 
 export const rating = asyncHandler(async (req, res) => {
     const { _id } = req.user
-    const { star, comment, pid } = req.body
+    const { star, comment, pid, updatedAt } = req.body
     if (!star || !pid) throw new Error('Mising inputs')
     const ratingProduct = await Product.findById(pid)
     const alreadyRating = ratingProduct?.rating?.find(el => el.postedBy.toString() === _id)
@@ -104,11 +121,11 @@ export const rating = asyncHandler(async (req, res) => {
         await Product.updateOne({
             _id: pid, "rating.postedBy": _id
         }, {
-            $set: { 'rating.$.star': star, 'rating.$.comment': comment, }
+            $set: { 'rating.$.star': star, 'rating.$.comment': comment, 'rating.$.updatedAt': updatedAt }
         }, { new: true })
     } else {
         //add start and comment
-        await Product.findByIdAndUpdate(pid, { $push: { rating: { star, comment, postedBy: _id } } }, { new: true })
+        await Product.findByIdAndUpdate(pid, { $push: { rating: { star, comment, postedBy: _id, updatedAt } } }, { new: true })
     }
 
     //total rating
@@ -116,7 +133,7 @@ export const rating = asyncHandler(async (req, res) => {
     const ratingCount = updatedProduct.rating.length
     const sumStarRating = updatedProduct.rating.reduce((sum, el) => sum + +el.star, 0)
     updatedProduct.totalRatings = Math.round(sumStarRating * 10 / ratingCount) / 10
-
+    await updatedProduct.save()
     return res.status(200).json({
         status: true,
         updatedProduct

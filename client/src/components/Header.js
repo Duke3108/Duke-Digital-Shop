@@ -27,11 +27,14 @@ const Header = () => {
                     </span>
                     <span>Hỗ Trợ 24/7</span>
                 </div>
-                <div className='flex items-center justify-center gap-2 px-6 border-r'>
+                <div className='flex items-center justify-center gap-2 px-6 border-r cursor-pointer'>
                     <FaCartShopping color='red' />
                     <span>0 item(s)</span>
                 </div>
-                <div className='flex items-center justify-center px-6 '><FaUser size={24} /></div>
+                <div className='flex items-center justify-center gap-2 px-6 cursor-pointer'>
+                    <FaUser color='red' />
+                    <span>Profile</span>
+                </div>
             </div>
         </div>
     )

@@ -6,14 +6,15 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      main: ["Poppins", "sans-serif"]
+      main: ['Be Vietnam Pro', "Poppins", "sans-serif"]
     },
     extend: {
       width: {
         main: '1220px'
       },
       backgroundColor: {
-        main: '#ee3131'
+        main: '#ee3131',
+        overlay: 'rgba(0,0,0,0.3)'
       },
       colors: {
         main: '#ee3131'
@@ -37,14 +38,37 @@ module.exports = {
             '-webkit-transform': 'translateY(0);',
             tranform: 'translateY(0);'
           }
+        },
+        'slide-top-sm': {
+          '0%': {
+            '-webkit-transform': 'translateY(8px);',
+            tranform: 'translateY(8px);'
+          },
+          '100%': {
+            '-webkit-transform': 'translateY(0);',
+            tranform: 'translateY(0);'
+          }
         }
       },
       animation: {
-        'slide-top': 'slide-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;'
+        'slide-top': 'slide-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;',
+        'slide-top-sm': 'slide-top-sm 0.2s linear both;',
+
       }
     },
+    listStyleType: {
+      square: 'square',
+      circle: 'circle',
+      decimal: 'decimal',
+      decimalLeadingZero: 'decimal-leading-zero',
+      lowerAlpha: 'lower-alpha',
+      upperAlpha: 'upper-alpha',
+      lowerRoman: 'lower-roman',
+      upperRoman: 'upper-roman'
+    }
   },
   plugins: [
-    "@tailwindcss/line-clamp"
+    "@tailwindcss/line-clamp",
+    require('@tailwindcss/forms')
   ],
 }

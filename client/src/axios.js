@@ -7,7 +7,13 @@ const instance = axios.create({
 // Thêm một bộ đón chặn request
 instance.interceptors.request.use(function (config) {
     // Làm gì đó trước khi request dược gửi đi
-    return config;
+    let localStorageData = window.localStorage.getItem('persist:shop/user')
+    if (localStorageData && typeof localStorageData === 'string') {
+        localStorageData = JSON.parse(localStorageData)
+        const accessToken = JSON.parse(localStorageData?.token)
+        config.headers = { Authorization: `Bearer ${accessToken}` }
+        return config;
+    } else return config;
 }, function (error) {
     // Làm gì đó với lỗi request
     return Promise.reject(error);
@@ -21,7 +27,7 @@ instance.interceptors.response.use(function (response) {
 }, function (error) {
     // Bất kì mã trạng thái nào lọt ra ngoài tầm 2xx đều khiến hàm này được trigger\
     // Làm gì đó với lỗi response
-    return error.data;
+    return error.response.data;
 });
 
 export default instance
