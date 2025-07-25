@@ -6,6 +6,8 @@ import { getCategories } from './store/asyncAction'
 import { useDispatch, useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify';
 import { Modal } from './components';
+import { AdminLayout, CreateProduct, DashBoard, ManageOrder, ManageProduct, ManageUser } from './pages/admin';
+import { MemberLayout, Personal } from './pages/member';
 
 function App() {
   const dispatch = useDispatch()
@@ -23,11 +25,28 @@ function App() {
           <Route path={path.DETAIL_PRODUCT__CATEGORY__PID__TITLE} element={<DetailProduct />} />
           <Route path={path.FAQ} element={<FAQ />} />
           <Route path={path.SERVICE} element={<Service />} />
+
+          <Route path={path.ALL} element={<Home />} />
           <Route path={path.PRODUCTS} element={<Products />} />
           <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
         </Route>
+
+
+        <Route path={path.ADMIN} element={<AdminLayout />}>
+          <Route path={path.DASHBOARD} element={<DashBoard />} />
+          <Route path={path.CREATE_PRODUCT} element={<CreateProduct />} />
+          <Route path={path.MANAGE_PRODUCT} element={<ManageProduct />} />
+          <Route path={path.MANAGE_USER} element={<ManageUser />} />
+          <Route path={path.MANAGE_ORDER} element={<ManageOrder />} />
+        </Route>
+
+        <Route path={path.MEMBER} element={<MemberLayout />}>
+          <Route path={path.PERSONAL} element={<Personal />} />
+        </Route>
+
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.LOGIN} element={<Login />} />
+
       </Routes>
       <ToastContainer
         position="top-right"

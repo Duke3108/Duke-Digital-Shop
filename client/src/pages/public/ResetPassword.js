@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Button from '../../components/Button'
+import Button from '../../components/button/Button'
 import { useParams } from 'react-router-dom'
 import { apiResetPassword } from '../../apis/user'
 import { toast } from 'react-toastify'

@@ -164,3 +164,44 @@ export const voteOptions = [
         text: 'Rất tốt'
     }
 ]
+
+const { RxDashboard, FaUserGroup, FcMultipleDevices, FaCartShopping } = icons
+export const adminSidebar = [
+    {
+        id: 1,
+        type: 'single',
+        text: 'Dashboard',
+        path: `/${path.ADMIN}/${path.DASHBOARD}`,
+        icon: <RxDashboard size={20} />
+    },
+    {
+        id: 2,
+        type: 'single',
+        text: 'Người dùng',
+        path: `/${path.ADMIN}/${path.MANAGE_USER}`,
+        icon: <FaUserGroup size={20} />
+    },
+    {
+        id: 3,
+        type: 'parent',
+        text: 'Sản phẩm',
+        icon: <FcMultipleDevices size={20} />,
+        submenu: [
+            {
+                text: 'Danh sách sản phẩm',
+                path: `/${path.ADMIN}/${path.MANAGE_PRODUCT}`
+            },
+            {
+                text: 'Thêm sản phẩm',
+                path: `/${path.ADMIN}/${path.CREATE_PRODUCT}`
+            }
+        ]
+    },
+    {
+        id: 4,
+        type: 'single',
+        text: 'Đơn hàng',
+        path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
+        icon: <FaCartShopping size={20} />
+    }
+]

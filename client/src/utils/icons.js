@@ -14,6 +14,9 @@ import { GoGift } from "react-icons/go";
 import { FaReply } from "react-icons/fa";
 import { FaTty } from "react-icons/fa6";
 import { AiOutlineDown } from "react-icons/ai";
+import { FaUserGroup } from "react-icons/fa6";
+import { RxDashboard } from "react-icons/rx";
+import { FcMultipleDevices } from "react-icons/fc";
 
 const icons = {
     RiPhoneFill,
@@ -33,7 +36,10 @@ const icons = {
     GoGift,
     FaReply,
     FaTty,
-    AiOutlineDown
+    AiOutlineDown,
+    RxDashboard,
+    FaUserGroup,
+    FcMultipleDevices
 };
 
 export default icons;

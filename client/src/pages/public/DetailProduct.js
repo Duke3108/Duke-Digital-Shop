@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { apiGetProduct, apiGetProducts } from '../../apis/product'
-import BreadCrumb from '../../components/BreadCrumb'
+import BreadCrumb from '../../components/common/BreadCrumb'
 import ReactImageMagnify from 'react-image-magnify';
-import Button from '../../components/Button'
+import Button from '../../components/button/Button'
 import Slider from "react-slick"
 import { formatMoney, formatPrice, renderStarFromNumber } from '../../utils/helper';
-import SelectQuantity from '../../components/SelectQuantity';
+import SelectQuantity from '../../components/common/SelectQuantity';
 import { extraInfomation } from '../../utils/constants';
-import ExtraInfoItem from '../../components/ExtraInfoItem';
-import ProductInfomation from '../../components/ProductInfomation';
+import ExtraInfoItem from '../../components/product/ExtraInfoItem';
+import ProductInfomation from '../../components/product/ProductInfomation';
 import { CustomSlider } from '../../components';
 
 const settings = {

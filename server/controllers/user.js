@@ -6,26 +6,6 @@ import sendMail from '../ultils/sendMail.js'
 import crypto from 'crypto'
 import makeToken from 'uniqid'
 
-// export const register = asyncHandler(async (req, res) => {
-//     const { email, password, name, mobile } = req.body
-//     if (!email || !password || !name || !mobile) {
-//         return res.status(400).json({
-//             success: false,
-//             mes: 'missing inputs'
-//         })
-//     }
-
-//     const user = await User.findOne({ email })
-//     if (user)
-//         throw new Error('User has existed')
-//     else {
-//         const newUser = await User.create(req.body)
-//         return res.status(200).json({
-//             success: newUser ? true : false,
-//             mes: newUser ? 'Register is successful' : 'something went wrong'
-//         })
-//     }
-// })
 
 export const register = asyncHandler(async (req, res) => {
     const { email, password, name, mobile } = req.body
@@ -61,7 +41,6 @@ export const register = asyncHandler(async (req, res) => {
             mes: 'please check your email'
         })
     }
-
 })
 
 export const finalRegister = asyncHandler(async (req, res) => {
@@ -122,7 +101,7 @@ export const login = asyncHandler(async (req, res) => {
 
 export const getCurrentUser = asyncHandler(async (req, res) => {
     const { _id } = req.user
-    const user = await User.findById(_id).select('-refreshToken -password -role')
+    const user = await User.findById(_id).select('-refreshToken -password')
     return res.status(200).json({
         success: user ? true : false,
         rs: user ? user : 'User not found'

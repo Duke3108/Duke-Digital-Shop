@@ -18,6 +18,8 @@ export const userSlice = createSlice({
         logout: (state, action) => {
             state.isLoggedIn = false
             state.token = null
+            state.current = null
+            state.mes = 'Bạn đã đăng xuất thành công'
         },
         clearMessage: (state) => {
             state.mes = ''

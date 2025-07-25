@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import InputField from '../../components/InputField'
-import Button from '../../components/Button'
+import InputField from '../../components/input/InputField'
+import Button from '../../components/button/Button'
 import { apiForgotPassword, apiLogin, apiRegister } from '../../apis/user'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom'
@@ -10,6 +10,8 @@ import { useDispatch } from 'react-redux'
 import bg from '../../assets/bg_dark.png'
 import { toast } from 'react-toastify'
 import { validate } from '../../utils/helper'
+import { showModal } from 'store/appSlice'
+import { Loading } from 'components'
 
 const Login = () => {
 
@@ -51,15 +53,14 @@ const Login = () => {
     resetPayload()
   }, [isRegister])
 
-
   const handleSubmit = useCallback(async () => {
     const { name, mobile, ...data } = payload
-
     const invalids = isRegister ? validate(payload, setInvalidFields) : validate(data, setInvalidFields)
-
     if (invalids === 0) {
       if (isRegister) {
+        dispatch(showModal({ isOpenModal: true, modalContent: <Loading /> }))
         const response = await apiRegister(payload)
+        dispatch(showModal({ isOpenModal: false, modalContent: null }))
         if (response.success) {
           Swal.fire('Đăng ký thành công', response.mes, 'success').then(() => {
             setIsRegister(false)
@@ -151,11 +152,18 @@ const Login = () => {
           <div className='flex items-center justify-between w-full my-2 text-sm'>
             {!isRegister && <span onClick={() => { setIsForgotPassword(true); setEmail('') }} className='text-red-500 cursor-pointer hover:underline'>Quên mật khẩu ?</span>}
             {!isRegister && <span
+              className='font-bold text-white cursor-pointer hover:underline'
+              onClick={() => navigate(`/${path.HOME}`)}
+            >
+              Trang chủ
+            </span>}
+            {!isRegister && <span
               className='text-red-500 cursor-pointer hover:underline'
               onClick={() => setIsRegister(true)}
             >
               Tạo tài khoản
             </span>}
+
             {isRegister && <span
               className='w-full text-center text-red-500 cursor-pointer hover:underline'
               onClick={() => setIsRegister(false)}
