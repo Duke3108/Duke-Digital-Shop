@@ -6,7 +6,7 @@ const FeatureProducts = () => {
     const [products, setProducts] = useState(null)
 
     const fetchProducts = async () => {
-        const response = await apiGetProducts({ limit: 9, totalRatings: { gt: 4.75 } })
+        const response = await apiGetProducts({ limit: 9, sort: '-totalRatings' })
         if (response.success) setProducts(response.products)
     }
 
@@ -29,27 +29,28 @@ const FeatureProducts = () => {
                     />
                 ))}
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-4 grid-rows-2 gap-4'>
                 <img
                     src="https://digital-world-2.myshopify.com/cdn/shop/files/Blue_And_Yellow_Modern_Electronic_Sale_Instagram_Post_580_x_655_px_1_600x.png?v=1750860746"
                     alt=""
-                    className='w-[49%] object-contain'
+                    className='object-cover w-full h-full col-span-2 row-span-2'
                 />
-                <div className='flex flex-col justify-between gap-4 w-[24%]'>
-                    <img
-                        src="https://digital-world-2.myshopify.com/cdn/shop/files/Orange_Colorful_Juicer_Photo_Instagram_Post_280_x_338_px_1_400x.png?v=1750860819"
-                        alt=""
-                    />
-                    <img
-                        src="https://digital-world-2.myshopify.com/cdn/shop/files/Red_and_Yellow_Classic_Neutrals_Cooking_Set_Product_Summer_Instagram_Post_280_x_338_px_1_cd2b3108-c6f2-4ee5-9597-8a501c61f0d6_400x.png?v=1750861662"
-                        alt=""
-                    />
-                </div>
+                <img
+                    src="https://digital-world-2.myshopify.com/cdn/shop/files/Orange_Colorful_Juicer_Photo_Instagram_Post_280_x_338_px_1_400x.png?v=1750860819"
+                    alt=""
+                    className='object-cover w-full h-full col-span-1 row-span-1'
+                />
                 <img
                     src="https://digital-world-2.myshopify.com/cdn/shop/files/Blue_Yellow_Simple_Mega_Sale_Electronic_Instagram_Post_280_x_655_px_1_400x.png?v=1750862046"
                     alt=""
-                    className='w-[24%] object-contain'
+                    className='object-cover w-full h-full col-span-1 row-span-2'
                 />
+                <img
+                    src="https://digital-world-2.myshopify.com/cdn/shop/files/Red_and_Yellow_Classic_Neutrals_Cooking_Set_Product_Summer_Instagram_Post_280_x_338_px_1_cd2b3108-c6f2-4ee5-9597-8a501c61f0d6_400x.png?v=1750861662"
+                    alt=""
+                    className='object-cover w-full h-full col-span-1 row-span-1'
+                />
+
             </div>
         </div>
     )

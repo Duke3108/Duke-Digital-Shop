@@ -1,16 +1,22 @@
 import Product from "../models/product.js";
 import asyncHandler from "express-async-handler";
 import slugtify from 'slugify'
+import makeSKU from 'uniqid'
 
 export const createProduct = asyncHandler(async (req, res) => {
-    if (Object.keys(req.body).length === 0) throw new Error('Missing inputs')
-    if (req.body && req.body.title) {
-        req.body.slug = slugtify(req.body.title)
+    const { title, category, price, description, color, brand } = req.body
+    const thumb = req?.files?.thumb[0]?.path
+    const images = req?.files?.images?.map(el => el.path)
+    if (!(title && category && price && description && color && brand)) {
+        throw new Error('Missing inputs')
     }
+    req.body.slug = slugtify(title)
+    if (thumb) req.body.thumb = thumb
+    if (images) req.body.images = images
     const newProduct = await Product.create(req.body)
     return res.status(200).json({
         success: newProduct ? true : false,
-        createdProduct: newProduct ? newProduct : 'Cannot create new product'
+        mes: newProduct ? 'Tao san pham thanh cong' : 'Cannot create new product'
     })
 })
 
@@ -46,9 +52,19 @@ export const getAllProducts = asyncHandler(async (req, res) => {
         formatedQueries = { $or: colorQuery }
     }
 
+
     //filtering
     if (queries?.title) restQueries.title = { $regex: queries.title, $options: 'i' } //regex tìm theo tên ko cần đầy đủ, option để viết chữ tường vẫn tìm được
     if (queries?.category) restQueries.category = { $regex: queries.category, $options: 'i' } //regex tìm theo category ko cần đầy đủ, option để viết chữ tường vẫn tìm được
+    if (req.query.q) {
+        delete restQueries.q
+        formatedQueries.$or = [
+            { title: { $regex: req.query.q, $options: 'i' } },
+            { category: { $regex: req.query.q, $options: 'i' } },
+            { brand: { $regex: req.query.q, $options: 'i' } },
+            { color: { $regex: req.query.q, $options: 'i' } },
+        ]
+    }
     const q = { ...formatedQueries, ...restQueries }
     let queryCommand = Product.find(q)//promise bending
 
@@ -88,16 +104,18 @@ export const getAllProducts = asyncHandler(async (req, res) => {
                 message: err.message
             });
         });
-
 })
 
 export const updateProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params
+    const files = req?.files
+    if (files?.thumb) req.body.thumb = files?.thumb[0]?.path
+    if (files?.images) req.body.images = files.images.map(el => el.path)
     if (req.body && req.body.title) req.body.slug = slugtify(req.body.title)
     const updatedProduct = await Product.findByIdAndUpdate(pid, req.body, { new: true })
     return res.status(200).json({
         success: updatedProduct ? true : false,
-        updatedProduct: updatedProduct ? updatedProduct : 'Cannot update product'
+        mes: updatedProduct ? 'Update product successfully' : 'Cannot update product'
     })
 })
 
@@ -106,7 +124,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     const deletedProduct = await Product.findByIdAndDelete(pid)
     return res.status(200).json({
         success: deletedProduct ? true : false,
-        deletedProduct: deletedProduct ? deletedProduct : 'Cannot delete products'
+        mes: deletedProduct ? 'Delete product successfully' : 'Cannot delete products'
     })
 })
 
@@ -147,5 +165,29 @@ export const uploadImagesProduct = asyncHandler(async (req, res) => {
     return res.status(200).json({
         status: response ? true : false,
         updatedProduct: response ? response : 'Can not update image'
+    })
+})
+
+export const addVarriant = asyncHandler(async (req, res) => {
+    const { pid } = req.params
+    const { title, price, color } = req.body
+    const thumb = req?.files?.thumb[0]?.path
+    const images = req?.files?.images?.map(el => el.path)
+    if (!(title && price && color)) {
+        throw new Error('Missing inputs')
+    }
+    const variant = {
+        title,
+        price,
+        color,
+        thumb,
+        images,
+        sku: makeSKU().toUpperCase(),
+        quantity
+    }
+    const updatedProduct = await Product.findByIdAndUpdate(pid, { $push: { variants: variant } }, { new: true })
+    return res.status(200).json({
+        success: updatedProduct ? true : false,
+        mes: updatedProduct ? 'add variant successfully' : 'Cannot add variant'
     })
 })

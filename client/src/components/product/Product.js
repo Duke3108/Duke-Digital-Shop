@@ -5,17 +5,29 @@ import yellowtag from '../../assets/new.png'
 import { renderStarFromNumber } from '../../utils/helper'
 import { SelectedOption } from '..'
 import icons from '../../utils/icons'
-import { Link } from 'react-router-dom'
+import withBase from 'hocs/withBase'
 
-const { AiFillEye, BiMenu, FaHeart } = icons
+const { AiFillEye, AiOutlineMenu, FaHeart } = icons
 
-const Product = ({ productData, isNew, normal }) => {
+const Product = ({ productData, isNew, normal, navigate }) => {
     const [isShowOption, setIsShowOption] = useState(false)
+    const handleNavigate = (e, flag) => {
+        e.stopPropagation()
+        if (flag === 'MENU') {
+            navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData.title}`)
+        }
+        if (flag === 'VIEW') {
+            console.log('View product details')
+        }
+        if (flag === 'FAVORITE') {
+            console.log('Add to favorite')
+        }
+    }
     return (
         <div className='w-full px-[10px] text-base'>
-            <Link
+            <div
                 className='w-full border p-[15px] flex flex-col items-center'
-                to={`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData.title}`}
+                onClick={() => navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData.title}`)}
                 onMouseEnter={(e) => {
                     e.stopPropagation()
                     setIsShowOption(true)
@@ -27,16 +39,10 @@ const Product = ({ productData, isNew, normal }) => {
             >
                 <div className='relative w-full'>
                     {isShowOption && <div className='absolute left-0 right-0 flex justify-center gap-2 bottom-1 animate-slide-top'>
-                        <SelectedOption icon={<AiFillEye />} />
-                        <SelectedOption icon={<BiMenu />} />
-                        <SelectedOption icon={<FaHeart />} />
+                        <span onClick={(e) => handleNavigate(e, 'VIEW')}><SelectedOption icon={<AiFillEye />} /></span>
+                        <span onClick={(e) => handleNavigate(e, 'MENU')}><SelectedOption icon={<AiOutlineMenu />} /></span>
+                        <span onClick={(e) => handleNavigate(e, 'FAVORITE')}><SelectedOption icon={<FaHeart />} /></span>
                     </div>}
-                    {/* <div className='flex justify-center'>
-                        <img src={productData?.thumb || 'https://apollobattery.com.au/wp-content/uploads/2022/08/default-product-image.png'}
-                            alt=''
-                            className='object-contain '
-                        />
-                    </div> */}
                     <img src={productData?.thumb || 'https://apollobattery.com.au/wp-content/uploads/2022/08/default-product-image.png'}
                         alt=''
                         className='w-full h-[274px] object-contain '
@@ -52,9 +58,9 @@ const Product = ({ productData, isNew, normal }) => {
                     <span className='line-clamp-1'>{productData?.title}</span>
                     <span>{`${formatMoney(productData?.price).length === 3 ? formatMoney(productData?.price * 10000) : formatMoney(productData?.price)} VNĐ`}</span>
                 </div>
-            </Link>
+            </div>
         </div>
     )
 }
 
-export default memo(Product)
+export default withBase(memo(Product))

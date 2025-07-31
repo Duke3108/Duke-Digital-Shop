@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify';
 import { Modal } from './components';
 import { AdminLayout, CreateProduct, DashBoard, ManageOrder, ManageProduct, ManageUser } from './pages/admin';
-import { MemberLayout, Personal } from './pages/member';
+import { History, MemberLayout, MyCart, Order, Personal, WishList } from './pages/member';
 
 function App() {
   const dispatch = useDispatch()
@@ -41,7 +41,12 @@ function App() {
         </Route>
 
         <Route path={path.MEMBER} element={<MemberLayout />}>
+          <Route path={path.MY_CART} element={<MyCart />} />
+          <Route path={path.WISH_LIST} element={<WishList />} />
+          <Route path={path.ORDER} element={<Order />} />
+          <Route path={path.HISTORY} element={<History />} />
           <Route path={path.PERSONAL} element={<Personal />} />
+
         </Route>
 
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />

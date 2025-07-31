@@ -1,5 +1,8 @@
 import path from "./path";
 import icons from './icons'
+import { MdFavorite } from "react-icons/md";
+import { FaHistory } from "react-icons/fa";
+import { FaBasketShopping } from "react-icons/fa6";
 
 export const navigation = [
     {
@@ -165,14 +168,14 @@ export const voteOptions = [
     }
 ]
 
-const { RxDashboard, FaUserGroup, FcMultipleDevices, FaCartShopping } = icons
+const { RiDashboardFill, FaUserGroup, FcMultipleDevices, FaCartShopping } = icons
 export const adminSidebar = [
     {
         id: 1,
         type: 'single',
         text: 'Dashboard',
         path: `/${path.ADMIN}/${path.DASHBOARD}`,
-        icon: <RxDashboard size={20} />
+        icon: <RiDashboardFill size={20} />
     },
     {
         id: 2,
@@ -204,4 +207,65 @@ export const adminSidebar = [
         path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
         icon: <FaCartShopping size={20} />
     }
+]
+
+export const memberSidebar = [
+
+    {
+        id: 1,
+        type: 'single',
+        text: 'Người dùng',
+        path: `/${path.MEMBER}/${path.PERSONAL}`,
+        icon: <FaUserGroup size={20} />
+    },
+    {
+        id: 2,
+        type: 'single',
+        text: 'Danh sách yêu thích',
+        path: `/${path.MEMBER}/${path.WISH_LIST}`,
+        icon: <MdFavorite size={20} />
+    },
+    {
+        id: 3,
+        type: 'single',
+        text: 'Giỏ hàng',
+        path: `/${path.MEMBER}/${path.MY_CART}`,
+        icon: <FaBasketShopping size={20} />
+    },
+    {
+        id: 4,
+        type: 'single',
+        text: 'Đơn hàng',
+        path: `/${path.MEMBER}/${path.ORDER}`,
+        icon: <FaCartShopping size={20} />
+    },
+    {
+        id: 5,
+        type: 'single',
+        text: 'Lịch sử mua hàng',
+        path: `/${path.MEMBER}/${path.HISTORY}`,
+        icon: <FaHistory size={20} />
+    }
+]
+
+export const roles = [
+    {
+        code: 2904,
+        value: 'User',
+    },
+    {
+        code: 3108,
+        value: 'Admin',
+    },
+]
+
+export const blockStatus = [
+    {
+        code: true,
+        value: 'Blocked',
+    },
+    {
+        code: false,
+        value: 'Active',
+    },
 ]

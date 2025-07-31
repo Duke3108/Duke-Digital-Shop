@@ -1,3 +1,4 @@
+/* eslint-disable react/style-prop-object */
 import React, { useState, useCallback, useEffect } from 'react'
 import InputField from '../../components/input/InputField'
 import Button from '../../components/button/Button'
@@ -116,33 +117,41 @@ const Login = () => {
         <div className='p-8 bg-transparent flex flex-col items-center rounded-md min-w-[500px] border-2 border-black'>
           <h1 className='text-[28px] font-semibold text-main mb-8'>{isRegister ? 'ĐĂNG KÝ' : 'ĐĂNG NHẬP'}</h1>
           {isRegister && <InputField
+            style='placeholder:text-white'
             value={payload.name}
             setValue={setPayload}
             nameKey='name'
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
+            fw={true}
           />}
           <InputField
+            style='placeholder:text-white'
             value={payload.email}
             setValue={setPayload}
             nameKey='email'
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
+            fw={true}
           />
           {isRegister && <InputField
+            style='placeholder:text-white'
             value={payload.mobile}
             setValue={setPayload}
             nameKey='mobile'
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
+            fw={true}
           />}
           <InputField
+            style='placeholder:text-white'
             value={payload.password}
             setValue={setPayload}
             nameKey='password'
             type='password'
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
+            fw={true}
           />
           <Button
             name={isRegister ? 'Đăng ký' : 'Đăng nhập'}

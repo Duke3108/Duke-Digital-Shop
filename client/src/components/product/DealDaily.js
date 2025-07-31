@@ -7,7 +7,7 @@ import Countdown from '../common/Countdown'
 import moment from 'moment'
 import { secondsToHms } from '../../utils/helper'
 
-const { BsStarFill, BiMenu } = icons
+const { BsStarFill, AiOutlineMenu } = icons
 let idInterval
 const DealDaily = () => {
     const [dealDaily, setDealDaily] = useState(null)
@@ -19,7 +19,7 @@ const DealDaily = () => {
         const response = await apiGetProducts({
             limit: 1,
             page: Math.round(Math.random() * 10),
-            totalRatings: { gt: 4.5 }  // hoặc gte nếu bạn muốn >= 4.5
+            sort: '-totalRatings',
         })
         if (response.success) {
             setDealDaily(response.products[0])
@@ -91,7 +91,7 @@ const DealDaily = () => {
                     type='button'
                     className='flex items-center justify-center w-full gap-2 py-2 font-medium text-white bg-main hover:bg-gray-800'
                 >
-                    <BiMenu />
+                    <AiOutlineMenu />
                     <span>Options</span>
                 </button>
             </div>

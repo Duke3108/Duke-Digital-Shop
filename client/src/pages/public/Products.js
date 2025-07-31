@@ -24,17 +24,14 @@ const Products = () => {
     const [params] = useSearchParams()
 
     const fetchProductsByCategory = async (queries) => {
-        const updatedQueries = { ...queries, limit: 12 }  // thêm hoặc ghi đè limit = 12
+        const updatedQueries = { ...queries, limit: 12 }
         const response = await apiGetProducts(updatedQueries)
         if (response.success) setProducts(response)
     }
 
     useEffect(() => {
-        let param = []
-        for (let i of params.entries()) param.push(i)
-        const queries = {}
+        const queries = Object.fromEntries([...params])
         let priceQuery = {}
-        for (let i of params) queries[i[0]] = i[1]
         setNameColor(queries.color)
         if (queries.to && queries.from) {
             priceQuery = {

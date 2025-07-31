@@ -31,3 +31,26 @@ export const apiGetCurrentUser = () => axios({
     url: '/user/current',
     method: 'get',
 })
+
+export const apiGetAllUsers = (params) => axios({
+    url: '/user/',
+    method: 'get',
+    params
+})
+
+export const apiUpdateUser = (data, uid) => axios({
+    url: `/user/${uid}`,
+    method: 'put',
+    data
+})
+
+export const apiDeleteUser = (uid) => axios({
+    url: `/user/${uid}`,
+    method: 'delete'
+})
+
+export const apiUpdateCurrentUser = (data) => axios({
+    url: `/user/current`,
+    method: 'put',
+    data
+})

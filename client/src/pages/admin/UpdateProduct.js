@@ -1,19 +1,20 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/style-prop-object */
+import { apiUpdateProduct } from 'apis'
 import { Button, InputForm, Loading, MarkdownEditer, Select } from 'components'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { MdCancel } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { fileToBase64, validate } from 'utils/helper'
-import { MdCancel } from "react-icons/md";
-import { apiCreateProduct } from 'apis'
 import { showModal } from 'store/appSlice'
+import { fileToBase64, validate } from 'utils/helper'
+import { FaChevronLeft } from "react-icons/fa6";
 
-const CreateProduct = () => {
+const UpdateProduct = ({ setEditProduct, editProduct, render }) => {
 
     const { categories } = useSelector(state => state.app)
     const dispatch = useDispatch()
-    const [created, setCreated] = useState(false)
     const {
         register,
         handleSubmit,
@@ -35,40 +36,6 @@ const CreateProduct = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [payload])
 
-    const render = useCallback(() => {
-        setCreated(!created)
-    }, [created])
-
-    const handleCreateProduct = async (data) => {
-        const invalids = validate(payload, setInvalidFields)
-        if (invalids === 0) {
-            if (data.category) data.category = categories?.find(el => el._id === data.category)?.title
-            const finalPayload = { ...data, ...payload }
-            const formData = new FormData()
-            for (let i of Object.entries(finalPayload)) {
-                formData.append(i[0], i[1])
-            }
-            if (finalPayload.thumb) {
-                formData.append('thumb', finalPayload.thumb[0])
-            }
-            if (finalPayload.images) {
-                for (let image of finalPayload.images) {
-                    formData.append('images', image)
-                }
-            }
-            dispatch(showModal({ isOpenModal: true, modalContent: <Loading /> }))
-            const response = await apiCreateProduct(formData)
-            dispatch(showModal({ isOpenModal: false, modalContent: null }))
-            if (response.success) {
-                toast.success('Tạo sản phẩm thành công')
-                reset()
-                render()
-                setPreview({ thumb: null, images: [] })
-                setPayload({ description: '' })
-            }
-        }
-    }
-
     const handlePreviewImages = async (file) => {
         const base64Thumb = await fileToBase64(file)
         setPreview(prev => ({ ...prev, thumb: base64Thumb }))
@@ -82,23 +49,41 @@ const CreateProduct = () => {
                 return;
             }
             const base64 = await fileToBase64(file)
-            imagesPreview.push({ name: file.name, path: base64 })
+            imagesPreview.push(base64)
         }
         setPreview(prev => ({ ...prev, images: imagesPreview }))
     }
 
     useEffect(() => {
-        if (watch('thumb').length > 0) {
+        if (editProduct) {
+            reset({
+                title: editProduct?.title || '',
+                price: editProduct?.price || '',
+                quantity: editProduct?.quantity || '',
+                color: editProduct?.color || '',
+                category: editProduct?.category || '',
+                brand: editProduct?.brand.toLowerCase() || ''
+            })
+            setPayload({
+                description: typeof editProduct?.description === 'object' ? editProduct?.description?.join(', ') : editProduct?.description
+            })
+            setPreview({
+                thumb: editProduct?.thumb || '',
+                images: editProduct?.images || []
+            })
+        }
+    }, [editProduct])
+
+    useEffect(() => {
+        if (watch('thumb') instanceof FileList && watch('thumb').length > 0) {
             handlePreviewImages(watch('thumb')[0])
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [watch('thumb')]);
 
     useEffect(() => {
-        if (watch('images').length > 0) {
+        if (watch('images') instanceof FileList && watch('images').length > 0) {
             handlePreviewMultipleImages(watch('images'))
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [watch('images')]);
 
     const handleRemoveImage = (name) => {
@@ -112,13 +97,38 @@ const CreateProduct = () => {
         // }
     }
 
+    const handleUpdateProduct = async (data) => {
+        const invalids = validate(payload, setInvalidFields)
+        if (invalids === 0) {
+            const finalPayload = { ...data, ...payload }
+            finalPayload.thumb = data?.thumb?.length === 0 ? preview.thumb : data.thumb[0]
+            const formData = new FormData()
+            for (let i of Object.entries(finalPayload)) {
+                formData.append(i[0], i[1])
+            }
+            finalPayload.images = data?.images?.length === 0 ? preview.images : data.images
+            for (let image of finalPayload.images) {
+                formData.append('images', image)
+            }
+            dispatch(showModal({ isOpenModal: true, modalContent: <Loading /> }))
+            const response = await apiUpdateProduct(formData, editProduct._id)
+            dispatch(showModal({ isOpenModal: false, modalContent: null }))
+            if (response.success) {
+                toast.success('Cập nhật sản phẩm thành công')
+                render()
+                setEditProduct(null)
+            }
+        }
+    }
+
     return (
-        <div className='w-full'>
-            <h1 className='h-[75px] flex justify-between items-center text-3xl font-bold px-2 border-b-2 border-gray-500'>
-                <span>Tạo sản phẩm mới</span>
+        <div className='relative w-full px-4 py-2 bg-gray-200'>
+            <h1 className='h-[75px] flex gap-2 items-center text-3xl font-bold px-2 border-b-2 border-gray-500'>
+                <span onClick={() => setEditProduct(null)} className='flex items-center justify-center w-10 h-10 cursor-pointer hover:rounded-full hover:bg-gray-300'><FaChevronLeft /></span>
+                <span>Cập nhật sản phẩm</span>
             </h1>
             <div className='p-4'>
-                <form onSubmit={handleSubmit(handleCreateProduct)}>
+                <form onSubmit={handleSubmit(handleUpdateProduct)}>
                     <InputForm
                         label='Tên sản phẩm'
                         register={register}
@@ -167,21 +177,23 @@ const CreateProduct = () => {
                     <div className='flex w-full gap-4 my-6'>
                         <Select
                             label='Danh mục'
-                            options={categories?.map(el => ({ code: el._id, value: el.title })).reverse()}
+                            options={categories?.map(el => ({ code: el.title, value: el.title })).reverse()}
                             register={register}
                             errors={errors}
                             id={'category'}
-                            defaultValue={categories?.[categories.length - 1]?._id}
+                            defaultValue={categories?.find(el => el.title === editProduct.category)?.title}
                             fw={true}
                             style='flex-auto'
                         />
                         <Select
                             label='Thương hiệu'
-                            options={categories?.find(el => el._id === watch('category'))?.brand?.map(brand => ({ code: brand, value: brand }))}
+                            options={categories?.find(el => el.title === watch('category'))?.brand?.map(brand => ({ code: brand.toLowerCase(), value: brand }))}
                             register={register}
+                            defaultValue={categories
+                                ?.find(el => el.title === watch('category'))?.brand
+                                ?.find(brand => brand === editProduct?.brand)}
                             errors={errors}
                             id={'brand'}
-                            defaultValue={categories?.find(el => el._id === watch('category'))?.brand?.[0]}
                             fw={true}
                             style='flex-auto'
                         />
@@ -192,7 +204,7 @@ const CreateProduct = () => {
                         <input
                             type="file"
                             id='thumb'
-                            {...register('thumb', { required: 'Yêu cầu chọn thumbnail cho sản phẩm' })}
+                            {...register('thumb')}
                         />
                         {errors['thumb'] && <small className='text-sm text-red-500'>{errors['thumb']?.message}</small>}
                     </div>
@@ -206,7 +218,7 @@ const CreateProduct = () => {
                             type="file"
                             id='images'
                             multiple
-                            {...register('images', { required: 'Yêu cầu chọn hình ảnh cho sản phẩm' })}
+                            {...register('images')}
                         />
                         {errors['images'] && <small className='text-sm text-red-500'>{errors['images']?.message}</small>}
                         {preview.images.length > 0 && <div className='flex flex-wrap w-full gap-4 my-4'>
@@ -214,11 +226,11 @@ const CreateProduct = () => {
                                 <div
                                     key={index}
                                     className='relative w-fit'
-                                    onMouseEnter={() => setHoverElm(img.name)}
+                                    onMouseEnter={() => setHoverElm(img)}
                                     onMouseLeave={() => setHoverElm(null)}
                                 >
-                                    <img src={img.path} alt='images' className='object-contain w-32 h-32' />
-                                    {hoverElm === img.name && (
+                                    {img !== '[object FileList]' && <img src={img} alt='images' className='object-contain w-32 h-32' />}
+                                    {hoverElm === img && (
                                         <div
                                             onClick={() => handleRemoveImage(img.name)}
                                             className='absolute inset-0 flex justify-end rounded-lg cursor-pointer bg-overlay'>
@@ -237,12 +249,11 @@ const CreateProduct = () => {
                         invalidField={invalidFields}
                         setInvalidField={setInvalidFields}
                         value={payload.description}
-                        placeholder={'Nhập mô tả sản phẩm...'}
                     />
 
-                    <div className='flex items-center justify-center w-full gap-4 my-6'>
+                    <div className='flex items-center justify-center w-full gap-4 my-6 '>
                         <Button
-                            name={'Thêm sản phẩm'}
+                            name={'Cập nhật sản phẩm'}
                             type='submit'
                         />
                     </div>
@@ -253,4 +264,4 @@ const CreateProduct = () => {
     )
 }
 
-export default CreateProduct
+export default UpdateProduct

@@ -3,7 +3,7 @@ import icons from '../../utils/icons'
 import { colors } from '../../utils/constants'
 import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { apiGetProducts } from '../../apis'
-import useDebounce from '../../hook/useDebounce'
+import useDebounce from '../../hooks/useDebounce'
 
 const { AiOutlineDown } = icons
 

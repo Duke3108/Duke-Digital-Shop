@@ -1,15 +1,17 @@
-import React, { Fragment, memo, useState } from 'react'
-import logo from '../../assets/logo_white.png'
-import { adminSidebar } from 'utils/constants'
-import { Link, NavLink } from 'react-router-dom'
 import clsx from 'clsx'
+import React, { Fragment, memo, useState } from 'react'
+import { memberSidebar } from 'utils/constants'
+import avt from '../../assets/user.png'
 import { AiOutlineCaretDown, AiOutlineCaretUp } from 'react-icons/ai'
+import { NavLink } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const activeStyle = 'px-4 py-3 flex gap-3 items-center rounded-lg text-white font-medium bg-gradient-to-r from-indigo-600 to-purple-600 shadow'
-const notActiveStyle = 'px-4 py-3 flex gap-3 items-center rounded-lg text-gray-300 hover:bg-zinc-700 transition duration-200'
+const notActiveStyle = 'px-4 py-3 flex gap-3 items-center rounded-lg hover:bg-gray-300 transition duration-200'
 
-const AdminSidebar = () => {
+const MemberSidebar = () => {
 
+    const { current } = useSelector(state => state.user)
     const [actived, setActived] = useState([])
     const handleShowTab = (id) => {
         if (actived.some(activeId => activeId === id)) {
@@ -20,13 +22,13 @@ const AdminSidebar = () => {
     }
 
     return (
-        <div className='h-full px-4 py-6 shadow-lg bg-zinc-900'>
-            <Link to={'/'} className='flex flex-col items-center gap-2 mb-6'>
-                <img src={logo} alt="logo" className='w-[180px] object-contain' />
-                <small className='text-sm text-gray-400'>Admin Workspace</small>
-            </Link>
+        <div className='h-full px-4 py-6 shadow-lg bg-gray-100 w-[275px]'>
+            <div className='flex flex-col items-center justify-center w-full gap-2 p-4'>
+                <img src={current?.avatar || avt} alt="logo" className='object-cover w-[80px] h-[80px] rounded-full' />
+                <small className='text-xl font-medium'>{current?.name}</small>
+            </div>
             <div className=''>
-                {adminSidebar.map((item) => (
+                {memberSidebar.map((item) => (
                     <Fragment key={item.id}>
                         {item.type === 'single' && <NavLink
                             to={item.path}
@@ -63,4 +65,4 @@ const AdminSidebar = () => {
     )
 }
 
-export default memo(AdminSidebar)
+export default memo(MemberSidebar)

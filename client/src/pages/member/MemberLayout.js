@@ -1,3 +1,4 @@
+import { MemberSidebar } from 'components'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate, Outlet } from 'react-router-dom'
@@ -9,9 +10,9 @@ const MemberLayout = () => {
         return <Navigate to={`/${path.LOGIN}`} replace={true} />
     }
     return (
-        <div>
-            MemberLayout
-            <div>
+        <div className='flex h-screen'>
+            <MemberSidebar />
+            <div className='flex-auto min-h-screen bg-gray-200'>
                 <Outlet />
             </div>
         </div>

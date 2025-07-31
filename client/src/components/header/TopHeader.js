@@ -3,11 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import path from '../../utils/path'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCurrentUser } from '../../store/user/asyncAction'
-import icons from '../../utils/icons'
 import { logout, clearMessage } from '../../store/user/userSlice'
 import Swal from 'sweetalert2'
-
-const { AiOutlineLogout } = icons
 
 const TopHeader = () => {
 
@@ -28,17 +25,14 @@ const TopHeader = () => {
         if (mes) {
             Swal.fire('Thông báo', mes, 'info').then(() => {
                 dispatch(clearMessage())
-                if (mes === 'Đăng xuất thành công') {
-                    navigate(`/${path.HOME}`)
-                }
-                navigate(`/${path.LOGIN}`)
+                navigate(`/${path.HOME}`)
             })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mes])
 
     return (
-        <div className='h-[38px] w-full bg-main flex justify-center items-center'>
+        <div className='h-[38px] w-full font-semibold bg-main flex justify-center items-center'>
             <div className='flex items-center justify-between text-xs text-white w-main text'>
                 <span>ĐẶT HÀNG TRỰC TUYẾN & LIÊN HỆ 0918516514</span>
 
@@ -48,7 +42,7 @@ const TopHeader = () => {
                         <span
                             onClick={() => dispatch(logout())}
                             className='p-2 hover:bg-gray-200 hover:rounded-full hover:text-main'>
-                            <AiOutlineLogout size={18} />
+
                         </span>
                     </div>
                     : <Link className='hover:text-gray-800' to={`/${path.LOGIN}`}>Đăng Nhập & Tạo Tài Khoản</Link>}

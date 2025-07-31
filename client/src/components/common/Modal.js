@@ -7,7 +7,7 @@ const Modal = ({ children }) => {
     return (
         <div
             onClick={() => dispatch(showModal({ isOpenModal: false, modalContent: null }))}
-            className='absolute inset-0 z-50 flex items-center justify-center bg-overlay'>
+            className='absolute inset-0 z-50 flex items-center justify-center h-screen bg-overlay'>
             {children}
         </div>
     )

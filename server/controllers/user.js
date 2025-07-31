@@ -2,10 +2,10 @@ import User from '../models/user.js'
 import asyncHandler from 'express-async-handler'
 import { generateAccessToken, generateRefreshToken } from '../middlewares/jwt.js'
 import jwt from 'jsonwebtoken'
-import sendMail from '../ultils/sendMail.js'
+import sendMail from '../utils/sendMail.js'
 import crypto from 'crypto'
 import makeToken from 'uniqid'
-
+import { users } from '../utils/constant.js'
 
 export const register = asyncHandler(async (req, res) => {
     const { email, password, name, mobile } = req.body
@@ -188,30 +188,87 @@ export const resetPassword = asyncHandler(async (req, res) => {
 })
 
 export const getAllUsers = asyncHandler(async (req, res) => {
-    const response = await User.find().select('-refreshToken -password -role')
-    return res.status(200).json({
-        success: response ? true : false,
-        users: response
-    })
+    const queries = { ...req.query }
+    //tách các trường đặc biệt ra khỏi query
+    const excludeFields = ['limit', 'sort', 'page', 'fields']
+    excludeFields.forEach(el => delete queries[el])
+
+    //format lại các operators cho đúng cú pháp mongo
+    let queryString = JSON.stringify(queries)
+    queryString = queryString.replace(/\b(gte|gt|lt|lte)\b/g, macthedEl => `$${macthedEl}`)
+    const formatedQueries = JSON.parse(queryString)
+
+    //filtering
+    if (queries?.name) formatedQueries.name = { $regex: queries.name, $options: 'i' } //regex tìm theo tên ko cần đầy đủ, option để viết chữ tường vẫn tìm được
+    if (req.query.q) {
+        delete formatedQueries.q
+        formatedQueries.$or = [
+            { email: { $regex: req.query.q, $options: 'i' } },
+            { name: { $regex: req.query.q, $options: 'i' } },
+            { mobile: { $regex: req.query.q, $options: 'i' } }
+        ]
+    }
+    let queryCommand = User.find(formatedQueries)//promise bending
+
+    //sorting
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(',').join(' ')
+        queryCommand = queryCommand.sort(sortBy)
+    }
+
+    //Fields limiting
+    if (req.query.fields) {
+        const fields = req.query.fields.split(',').join(' ')
+        queryCommand = queryCommand.select(fields)
+    }
+
+    //pagination
+    //limit: số object lấy về 1 lần gọi api
+    const page = +req.query.page || 1
+    const limit = +req.query.limit || process.env.LIMIT_PRODUCT
+    const skip = (page - 1) * limit
+    queryCommand.skip(skip).limit(limit)
+
+    //execute query
+    //số lượng sp thỏa mãn điều kiện !== số lượng sp trả về 1 lần gọi api
+    queryCommand.exec()
+        .then(async (response) => {
+            const counts = await User.find(formatedQueries).countDocuments();
+            return res.status(200).json({
+                success: response ? true : false,
+                counts,
+                users: response ? response : 'Cannot get users',
+            });
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                success: false,
+                message: err.message
+            });
+        });
 })
 
 export const deleteUser = asyncHandler(async (req, res) => {
-    const { _id } = req.query
-    if (!_id) throw new Error('Missing input')
-    const response = await User.findByIdAndDelete(_id)
+    const { uid } = req.params
+    const response = await User.findByIdAndDelete(uid)
     return res.status(200).json({
         success: response ? true : false,
-        deleteUser: response ? `User with email ${response.email} was deleted` : 'Can not delete this user'
+        mes: response ? `User with email ${response.email} was deleted` : 'Can not delete this user'
     })
 })
 
 export const updateUser = asyncHandler(async (req, res) => {
     const { _id } = req.user
+    const { name, email, mobile, address } = req.body
+    const data = { name, email, mobile, address }
+    if (req.file) {
+        data.avatar = req.file.path
+    }
     if (!_id || Object.keys(req.body).length === 0) throw new Error('Missing inputs')
-    const response = await User.findByIdAndUpdate(_id, req.body, { new: true }).select('-password -role -refreshToken')
+    const response = await User.findByIdAndUpdate(_id, data, { new: true }).select('-password -role -refreshToken')
     return res.status(200).json({
         success: response ? true : false,
-        updatedUser: response ? response : 'Something went wrong'
+        mes: response ? 'Cập nhật người dùng thành công' : 'Something went wrong'
     })
 })
 
@@ -263,4 +320,12 @@ export const updateCart = asyncHandler(async (req, res) => {
         })
     }
 
+})
+
+export const createUsers = asyncHandler(async (req, res) => {
+    const response = await User.create(users)
+    return res.status(200).json({
+        success: response ? true : false,
+        createdUser: response ? response : 'Cannot create user'
+    })
 })
