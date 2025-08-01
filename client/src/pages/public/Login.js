@@ -4,7 +4,7 @@ import InputField from '../../components/input/InputField'
 import Button from '../../components/button/Button'
 import { apiForgotPassword, apiLogin, apiRegister } from '../../apis/user'
 import Swal from 'sweetalert2'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import path from '../../utils/path'
 import { login } from '../../store/user/userSlice'
 import { useDispatch } from 'react-redux'
@@ -29,6 +29,7 @@ const Login = () => {
   const [isRegister, setIsRegister] = useState(false)
   const [isForgotPassword, setIsForgotPassword] = useState(false)
   const [email, setEmail] = useState('')
+  const [searchParams] = useSearchParams()
 
   const resetPayload = () => {
     setPayload({
@@ -72,11 +73,16 @@ const Login = () => {
         const rs = await apiLogin(data)
         if (rs.success) {
           dispatch(login({ isLoggedIn: true, token: rs.accessToken, userData: rs.userData }))
-          navigate(`/${path.HOME}`)
+          if (searchParams.get('redirect')) {
+            navigate(searchParams.get('redirect'))
+          } else {
+            navigate(`/${path.HOME}`)
+          }
         } else Swal.fire('Đăng nhập thất bại', rs.mes, 'error')
       }
     }
-  }, [payload, isRegister, dispatch, navigate])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payload, isRegister])
 
   return (
     <div className='relative w-screen h-screen'>
@@ -117,7 +123,7 @@ const Login = () => {
         <div className='p-8 bg-transparent flex flex-col items-center rounded-md min-w-[500px] border-2 border-black'>
           <h1 className='text-[28px] font-semibold text-main mb-8'>{isRegister ? 'ĐĂNG KÝ' : 'ĐĂNG NHẬP'}</h1>
           {isRegister && <InputField
-            style='placeholder:text-white'
+            style='placeholder:text-white text-white'
             value={payload.name}
             setValue={setPayload}
             nameKey='name'
@@ -126,7 +132,7 @@ const Login = () => {
             fw={true}
           />}
           <InputField
-            style='placeholder:text-white'
+            style='placeholder:text-white text-white'
             value={payload.email}
             setValue={setPayload}
             nameKey='email'
@@ -135,7 +141,7 @@ const Login = () => {
             fw={true}
           />
           {isRegister && <InputField
-            style='placeholder:text-white'
+            style='placeholder:text-white text-white'
             value={payload.mobile}
             setValue={setPayload}
             nameKey='mobile'
@@ -144,7 +150,7 @@ const Login = () => {
             fw={true}
           />}
           <InputField
-            style='placeholder:text-white'
+            style='placeholder:text-white text-white'
             value={payload.password}
             setValue={setPayload}
             nameKey='password'

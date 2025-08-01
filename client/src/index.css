@@ -1,24 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100..900,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 .custom-slider button.slick-next{
-    right: 70px;
-    top: 40%;
+    right: 10px;
+    top: 50%;
     z-index: 10;
+    width: 80px;
+    height: 80px;
 }
 
 .custom-slider button.slick-prev{
     left: 10px;
-    top: 40%;
+    top: 50%;
+    width: 80px;
+    height: 80px;
     z-index: 10;
 }
 
 .custom-slider button.slick-next::before{
-    color: gray;
+    color: #ee3131;
     content: '\276F';
-    background-color: #ffd3d3;
+    background-color: rgba(128, 128, 128, 0.5);
     width: 80px;
     height: 80px;
     font-size: 30px;
@@ -28,9 +32,9 @@
 }
 
 .custom-slider button.slick-prev::before{
-    color: gray;
+    color: #ee3131;
     content: '\276E';
-    background-color: #ffd3d3;
+    background-color: rgba(128, 128, 128, 0.5);
     width: 80px;
     height: 80px;
     font-size: 30px;
@@ -41,21 +45,25 @@
 
 
 .image-slider button.slick-next{
-    right: 23px;
-    top: 55px;
+    right: 0px;
+    top: 50%;
+    width: 40px;
+    height: 40px;
     z-index: 10;
 }
 
 .image-slider button.slick-prev{
     left: 0px;
-    top: 55px;
+    top: 50%;
+    width: 40px;
+    height: 40px;
     z-index: 10;
 }
 
 .image-slider button.slick-next::before{
-    color: gray;
+    color: #ee3131;
     content: '\276F';
-    background-color: #ffd3d3;
+    background-color: rgba(128, 128, 128, 0.5);
     width: 40px;
     height: 40px;
     font-size: 30px;
@@ -65,9 +73,9 @@
 }
 
 .image-slider button.slick-prev::before{
-    color: gray;
+    color: #ee3131;
     content: '\276E';
-    background-color: #ffd3d3;
+    background-color: rgba(128, 128, 128, 0.5);
     width: 40px;
     height: 40px;
     font-size: 30px;
@@ -98,3 +106,4 @@
 code{
     white-space: initial;
 }
+

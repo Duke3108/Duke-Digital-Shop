@@ -26,6 +26,10 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
         changeActiveFilter(null)
     }
 
+    const fetchBestPriceProduct = async () => {
+        const response = await apiGetProducts({ sort: '-price', limit: 1 })
+        if (response.success) setMaxPrice(response.products[0].price)
+    }
 
     useEffect(() => {
         let param = []
@@ -41,14 +45,9 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
         navigate({
             pathname: `/${category}`,
             search: createSearchParams(queries).toString()
-        })
+        }, { replace: true })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected])
-
-    const fetchBestPriceProduct = async () => {
-        const response = await apiGetProducts({ sort: '-price', limit: 1 })
-        if (response.success) setMaxPrice(response.products[0].price)
-    }
 
     useEffect(() => {
         if (type === 'input') fetchBestPriceProduct()
@@ -75,7 +74,7 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
         navigate({
             pathname: `/${category}`,
             search: createSearchParams(queries).toString()
-        })
+        }, { replace: true })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncePriceFrom, debouncePriceTo])
 

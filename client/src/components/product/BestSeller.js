@@ -2,7 +2,6 @@ import React, { useEffect, useState, memo } from 'react'
 import { apiGetProducts } from '../../apis/product'
 import CustomSlider from '../common/CustomSlider'
 
-
 const tabs = [
     { id: 1, name: 'bán chạy' },
     { id: 2, name: 'hàng mới' },
@@ -34,7 +33,8 @@ const BestSeller = () => {
     }, [activeTab, bestSellers, newProduct])
     return (
         <div>
-            <div className='flex text-[20px] ml-[-32px]'>
+
+            <div className='flex text-[20px] ml-[-32px] pb-4'>
                 {tabs.map(el => (
                     <span
                         key={el.id}
@@ -44,11 +44,13 @@ const BestSeller = () => {
 
                 ))}
             </div>
-            <div className='pt-4 mx-[-10px] mt-4 border-t-2 border-main'>
-                <CustomSlider
-                    activeTab={activeTab}
-                    product={products}
-                />
+            <div className='border-t-2 border-main'>
+                <div className='mt-5 mx-[-10px]'>
+                    <CustomSlider
+                        activeTab={activeTab}
+                        product={products}
+                    />
+                </div>
             </div>
             <div className='flex w-full gap-4 mt-8'>
                 <img

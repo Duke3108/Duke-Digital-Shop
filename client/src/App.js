@@ -1,22 +1,26 @@
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom'
-import { Login, Home, Public, Blog, DetailProduct, FAQ, Service, Products, FinalRegister, ResetPassword } from './pages/public'
+import { Login, Home, Public, Blog, DetailProduct, FAQ, Service, Products, FinalRegister, ResetPassword, DetailCart, Checkout } from './pages/public'
 import path from './utils/path'
 import { getCategories } from './store/asyncAction'
 import { useDispatch, useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify';
-import { Modal } from './components';
+import { Cart, Modal } from './components';
 import { AdminLayout, CreateProduct, DashBoard, ManageOrder, ManageProduct, ManageUser } from './pages/admin';
-import { History, MemberLayout, MyCart, Order, Personal, WishList } from './pages/member';
+import { History, MemberLayout, Order, Personal, WishList } from './pages/member';
+import { showCart } from 'store/appSlice';
 
 function App() {
   const dispatch = useDispatch()
-  const { isOpenModal, modalContent } = useSelector((state) => state.app)
+  const { isOpenModal, modalContent, isShowCart } = useSelector((state) => state.app)
   useEffect(() => {
     dispatch(getCategories())
   }, [dispatch])
   return (
-    <div className="relative font-main">
+    <div className="relative h-screen font-main">
+      {isShowCart && <div onClick={() => dispatch(showCart({ isShowCart: false }))} className='absolute inset-0 z-50 flex justify-end bg-overlay'>
+        <Cart />
+      </div>}
       {isOpenModal && <Modal>{modalContent}</Modal>}
       <Routes>
         <Route path={path.PUBLIC} element={<Public />}>
@@ -25,8 +29,9 @@ function App() {
           <Route path={path.DETAIL_PRODUCT__CATEGORY__PID__TITLE} element={<DetailProduct />} />
           <Route path={path.FAQ} element={<FAQ />} />
           <Route path={path.SERVICE} element={<Service />} />
-
+          <Route path={path.DETAIL_CART} element={<DetailCart />} />
           <Route path={path.ALL} element={<Home />} />
+          <Route path={path.ALL_PRODUCTS} element={<Products />} />
           <Route path={path.PRODUCTS} element={<Products />} />
           <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
         </Route>
@@ -41,14 +46,14 @@ function App() {
         </Route>
 
         <Route path={path.MEMBER} element={<MemberLayout />}>
-          <Route path={path.MY_CART} element={<MyCart />} />
+          <Route path={path.MY_CART} element={<DetailCart />} />
           <Route path={path.WISH_LIST} element={<WishList />} />
           <Route path={path.ORDER} element={<Order />} />
           <Route path={path.HISTORY} element={<History />} />
           <Route path={path.PERSONAL} element={<Personal />} />
-
         </Route>
 
+        <Route path={path.CHECKOUT} element={<Checkout />} />
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.LOGIN} element={<Login />} />
 

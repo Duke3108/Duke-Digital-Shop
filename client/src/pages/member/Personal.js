@@ -72,7 +72,7 @@ const Personal = () => {
             <header className='py-4 text-2xl font-semibold text-gray-800 border-b-2 border-gray-500'>
                 Thông tin cá nhân
             </header>
-            <form onSubmit={handleSubmit(handleUpdateInfo)} className='flex flex-col w-3/5 gap-6 py-8 mx-auto mt-4'>
+            <form onSubmit={handleSubmit(handleUpdateInfo)} className='flex flex-col w-3/5 gap-6 py-4 mx-auto mt-4'>
                 <label htmlFor='avatar' className='flex items-center justify-center w-full cursor-pointer'>
                     <img src={currentImage} alt="logo" className='rounded-full object-cover w-[100px] h-[100px]' />
                 </label>

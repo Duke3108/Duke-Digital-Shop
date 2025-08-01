@@ -54,3 +54,15 @@ export const apiUpdateCurrentUser = (data) => axios({
     method: 'put',
     data
 })
+
+export const apiUpdateCart = (data) => axios({
+    url: `/user/cart`,
+    method: 'put',
+    data
+})
+
+export const apiDeleteCartItem = (data) => axios({
+    url: `/user/remove-cart`,
+    method: 'put',
+    data
+})

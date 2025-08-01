@@ -16,6 +16,7 @@ import { AiOutlineDown } from "react-icons/ai";
 import { FaUserGroup } from "react-icons/fa6";
 import { RxDashboard } from "react-icons/rx";
 import { FcMultipleDevices } from "react-icons/fc";
+import { BsCartPlusFill, BsFillCartCheckFill } from "react-icons/bs";
 
 const icons = {
     RiPhoneFill,
@@ -39,7 +40,9 @@ const icons = {
     RxDashboard,
     FaUserGroup,
     FcMultipleDevices,
-    RiDashboardFill
+    RiDashboardFill,
+    BsCartPlusFill,
+    BsFillCartCheckFill
 };
 
 export default icons;

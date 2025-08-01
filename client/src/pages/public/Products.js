@@ -24,10 +24,24 @@ const Products = () => {
     const [params] = useSearchParams()
 
     const fetchProductsByCategory = async (queries) => {
-        const updatedQueries = { ...queries, limit: 12 }
-        const response = await apiGetProducts(updatedQueries)
-        if (response.success) setProducts(response)
+        if (category) {
+            const updatedQueries = { ...queries, limit: 12, category }
+            const response = await apiGetProducts(updatedQueries)
+            if (response.success) setProducts(response)
+        } else {
+            const response = await apiGetProducts({ limit: 12, ...queries })
+            if (response.success) setProducts(response)
+        }
     }
+
+    const changeActiveFilter = useCallback((name) => {
+        if (activeClick === name) setActiveClick(null)
+        else setActiveClick(name)
+    }, [activeClick])
+
+    const changeValue = useCallback((value) => {
+        setSort(value)
+    }, [])
 
     useEffect(() => {
         const queries = Object.fromEntries([...params])
@@ -50,17 +64,8 @@ const Products = () => {
         const q = { ...priceQuery, ...queries }
         fetchProductsByCategory(q)
         window.scrollTo(0, 0)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params])
-
-    const changeActiveFilter = useCallback((name) => {
-        if (activeClick === name) setActiveClick(null)
-        else setActiveClick(name)
-    }, [activeClick])
-
-    const changeValue = useCallback((value) => {
-        setSort(value)
-    }, [])
-
 
     useEffect(() => {
         if (sort) {
@@ -71,6 +76,13 @@ const Products = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sort])
+
+    useEffect(() => {
+        if (!category) {
+            navigate(`/products/all`, { replace: true })
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [category])
 
     return (
         <div className='w-full'>
@@ -106,9 +118,9 @@ const Products = () => {
                             options={sortOptions}
                         />
                     </div>
-
                 </div>
             </div>
+
             <div className='m-auto mt-8 w-main'>
                 <Masonry
                     breakpointCols={breakpointColumnsObj}

@@ -47,7 +47,7 @@ const Home = () => {
             <div className='my-8 w-main'>
                 <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main'>HÀNG HOT</h3>
                 <div className='flex flex-wrap gap-4 mt-4'>
-                    {categories?.filter(el => el.brand.length > 0)?.map((el, index) => (
+                    {categories?.filter(el => el.brand.length > 0)?.slice(0, 6)?.map((el, index) => (
                         <div
                             key={index}
                             className='w-[396px]'
@@ -57,7 +57,7 @@ const Home = () => {
                                 <div className='flex-1 text-gray-700'>
                                     <h4 className='font-semibold uppercase'>{el.title}</h4>
                                     <ul className='text-sm'>
-                                        {el?.brand?.map((item, index) => (
+                                        {el?.brand?.slice(0, 6).map((item, index) => (
                                             <span key={index} className='flex items-center gap-1 text-gray-500'>
                                                 <IoIosArrowForward size={14} />
                                                 <li>{item}</li>

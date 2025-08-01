@@ -9,12 +9,16 @@ export const appSlice = createSlice({
         errorMessage: '',
         isOpenModal: false,
         modalContent: null,
+        isShowCart: false,
     },
     reducers: {
         showModal: (state, action) => {
             state.isOpenModal = action.payload.isOpenModal;
             state.modalContent = action.payload.modalContent;
-        }
+        },
+        showCart: (state, action) => {
+            state.isShowCart = action.payload.isShowCart;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(actions.getCategories.pending, (state) => {
@@ -32,6 +36,6 @@ export const appSlice = createSlice({
         });
     },
 })
-export const { showModal } = appSlice.actions
+export const { showModal, showCart } = appSlice.actions
 
 export default appSlice.reducer

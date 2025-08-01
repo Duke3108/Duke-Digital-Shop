@@ -7,7 +7,7 @@ const { IoIosArrowForward } = icons
 const BreadCrumb = ({ title, category }) => {
     const routes = [
         { path: "/:category", breadcrumb: category },
-        { path: "/", breadcrumb: "Home" },
+        { path: "/", breadcrumb: "Trang chủ" },
         { path: "/:category/:pid/:title", breadcrumb: title },
 
     ];

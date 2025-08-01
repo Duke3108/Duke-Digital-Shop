@@ -6,7 +6,7 @@ const Banner = () => {
             <img
                 src='https://4kwallpapers.com/images/wallpapers/asus-tuf-amoled-3840x2160-15698.png'
                 alt='banner'
-                className='h-[394px] object-cover w-full'
+                className='h-[494px] object-cover w-full'
             />
         </div>
     )

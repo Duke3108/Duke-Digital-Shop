@@ -32,7 +32,7 @@ const TopHeader = () => {
     }, [mes])
 
     return (
-        <div className='h-[38px] w-full font-semibold bg-main flex justify-center items-center'>
+        <div className='h-[38px] py-4 w-full font-semibold bg-main flex justify-center items-center'>
             <div className='flex items-center justify-between text-xs text-white w-main text'>
                 <span>ĐẶT HÀNG TRỰC TUYẾN & LIÊN HỆ 0918516514</span>
 

@@ -15,6 +15,7 @@ const DealDaily = () => {
     const [minute, setMinute] = useState(0)
     const [second, setSecond] = useState(0)
     const [expireTime, setExpireTime] = useState(false)
+
     const fetchDealDaily = async () => {
         const response = await apiGetProducts({
             limit: 1,

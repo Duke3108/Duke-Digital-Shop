@@ -1,5 +1,5 @@
 import express from 'express'
-import { register, login, getCurrentUser, refreshAccessToken, logout, forgotPassword, resetPassword, getAllUsers, deleteUser, updateUser, updateUserByAdmin, updateAddressUser, updateCart, finalRegister, createUsers } from '../controllers/user.js'
+import { register, login, getCurrentUser, deleteCartItem, refreshAccessToken, logout, forgotPassword, resetPassword, getAllUsers, deleteUser, updateUser, updateUserByAdmin, updateAddressUser, updateCart, finalRegister, createUsers } from '../controllers/user.js'
 import { isAdmin, verifyAccessToken } from '../middlewares/verifyToken.js'
 import uploader from '../config/cloudinary.config.js'
 
@@ -18,6 +18,7 @@ userRouter.get('/', [verifyAccessToken, isAdmin], getAllUsers)
 userRouter.delete('/:uid', [verifyAccessToken, isAdmin], deleteUser)
 userRouter.put('/current', verifyAccessToken, uploader.single('avatar'), updateUser)
 userRouter.put('/cart', [verifyAccessToken], updateCart)
+userRouter.put('/remove-cart', [verifyAccessToken], deleteCartItem)
 userRouter.put('/address', [verifyAccessToken], updateAddressUser)
 userRouter.put('/:uid', [verifyAccessToken, isAdmin], updateUserByAdmin)
 

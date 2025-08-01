@@ -6,6 +6,7 @@ import path from '../../utils/path'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from 'store/user/userSlice'
 import { AiOutlineLogout } from 'react-icons/ai'
+import { showCart } from 'store/appSlice'
 
 const { RiPhoneFill, MdEmail, FaCartShopping, FaUser } = icons;
 
@@ -52,9 +53,9 @@ const Header = () => {
                 </div>
 
                 {current && <Fragment>
-                    <div className='flex items-center justify-center gap-2 px-6 font-semibold border-r cursor-pointer select-none'>
+                    <div onClick={() => dispatch(showCart({ isShowCart: true }))} className='flex items-center justify-center gap-2 px-6 font-semibold border-r cursor-pointer select-none'>
                         <FaCartShopping color='red' />
-                        <span>0 item(s)</span>
+                        <span>{`Giỏ hàng (${current?.cart?.length})`}</span>
                     </div>
                     <div
                         id='profile'

@@ -4,12 +4,15 @@ const path = {
     ALL: '*',
     LOGIN: 'login',
     PRODUCTS: ':category',
+    ALL_PRODUCTS: 'products/all',
     BLOGS: 'blogs',
     SERVICE: 'service',
     FAQ: 'faqs',
     DETAIL_PRODUCT__CATEGORY__PID__TITLE: ':category/:pid/:title',
     FINAL_REGISTER: 'finalregister/:status',
     RESET_PASSWORD: 'reset-password/:token',
+    DETAIL_CART: 'detail-cart',
+    CHECKOUT: 'checkout',
 
 
     // Admin
