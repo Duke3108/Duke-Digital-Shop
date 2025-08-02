@@ -4,17 +4,21 @@ import mongoose from "mongoose";// Erase if already required
 var orderSchema = new mongoose.Schema({
     products: [{
         product: { type: mongoose.Types.ObjectId, ref: 'Product' },
-        count: Number,
+        quantity: Number,
         color: String,
+        price: Number,
+        thumb: String,
+        title: String
     }],
     status: {
         type: String,
-        default: 'Processing',
-        emum: ['Cancelled', 'Processing', 'Succeed']
+        default: 'Cancelled',
+        enum: ['Cancelled', 'Succeed']
     },
     total: Number,
-    coupon: {
-        type: mongoose.Types.ObjectId, ref: 'Coupon'
+    address: {
+        type: String,
+        required: true
     },
     orderBy: {
         type: mongoose.Types.ObjectId, ref: 'User'

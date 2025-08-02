@@ -12,6 +12,12 @@ const Cart = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { current } = useSelector(state => state.user)
+    const handleToCartDetail = () => {
+        if (current?.cart && current?.cart?.length > 0) {
+            dispatch(showCart({ isShowCart: false }))
+            return navigate(`/${path.DETAIL_CART}`)
+        } else return
+    }
     return (
         <div onClick={e => e.stopPropagation()} className='w-[400px] p-6 h-screen overflow-hidden flex flex-col bg-[#1C1D1D] text-white'>
             <header className='flex items-center justify-between flex-1 text-2xl font-bold border-b border-gray-600 cursor-default'>
@@ -45,7 +51,7 @@ const Cart = () => {
                 <span className='text-sm italic text-center text-gray-300'>
                     *Giá trên chưa bao gồm các khoản thuế, phí vận chuyển và giảm giá.
                 </span>
-                <div onClick={() => { navigate(`/${path.DETAIL_CART}`, { replace: false }); dispatch(showCart({ isShowCart: false })) }} className='flex justify-center mt-4'>
+                <div onClick={handleToCartDetail} className='flex justify-center mt-4'>
                     <Button
                         fw
                         name={'Thanh toán'}

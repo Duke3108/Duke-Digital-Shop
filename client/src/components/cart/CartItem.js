@@ -1,5 +1,5 @@
 import { apiDeleteCartItem, apiUpdateCart } from 'apis'
-import React from 'react'
+import React, { memo } from 'react'
 import { useDispatch } from 'react-redux'
 import { getCurrentUser } from 'store/user/asyncAction'
 import { formatMoney } from 'utils/helper'
@@ -57,4 +57,4 @@ const CartItem = ({ pid, title, price, thumb, color, quantity }) => {
     )
 }
 
-export default CartItem
+export default memo(CartItem)

@@ -102,7 +102,7 @@ const DetailCart = () => {
                     <span className='text-sm italic text-gray-500'>
                         *Giá trên chưa bao gồm các khoản thuế, phí vận chuyển và giảm giá.
                     </span>
-                    <Link target='_blank' to={`/${path.CHECKOUT}`} className='px-4 py-2 my-2 font-semibold text-white rounded-md bg-main'>
+                    <Link to={`/${path.CHECKOUT}`} className='px-4 py-2 my-2 font-semibold text-white rounded-md bg-main'>
                         Thanh toán
                     </Link>
                 </div>
