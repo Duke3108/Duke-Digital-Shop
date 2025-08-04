@@ -9,15 +9,16 @@ import { showModal } from 'store/appSlice'
 import { DetailProduct } from 'pages/public'
 import { useDispatch, useSelector } from 'react-redux'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
-import { apiDeleteCartItem, apiUpdateCart } from 'apis'
+import { apiDeleteCartItem, apiUpdateCart, apiUpdateWishlist } from 'apis'
 import { toast } from 'react-toastify'
 import { getCurrentUser } from 'store/user/asyncAction'
 import Swal from 'sweetalert2'
 import path from 'utils/path'
+import clsx from 'clsx'
 
 const { AiFillEye, BsCartPlusFill, BsFillCartCheckFill, FaHeart } = icons
 
-const Product = ({ productData, isNew, normal }) => {
+const Product = ({ productData, isNew, normal, wishlist }) => {
     const [isShowOption, setIsShowOption] = useState(false)
     const { current } = useSelector((state) => state.user)
     const location = useLocation()
@@ -81,14 +82,37 @@ const Product = ({ productData, isNew, normal }) => {
             }))
         }
         if (flag === 'FAVORITE') {
-            console.log('Add to favorite')
+            const response = await apiUpdateWishlist(productData?._id)
+            if (response.success) {
+                toast.success('Đã thêm sản phẩm vào danh sách yêu thích', {
+                    autoClose: 2000
+                })
+                dispatch(getCurrentUser())
+            } else {
+                toast.error('Không thể thực hiện hành động này', {
+                    autoClose: 2000
+                })
+            }
+        }
+        if (flag === 'REMOVE_FAVORITE') {
+            const response = await apiUpdateWishlist(productData?._id)
+            if (response.success) {
+                toast.success('Đã xóa sản phẩm khỏi danh sách yêu thích', {
+                    autoClose: 2000
+                })
+                dispatch(getCurrentUser())
+            } else {
+                toast.error('Không thể thực hiện hành động này', {
+                    autoClose: 2000
+                })
+            }
         }
     }
 
     return (
         <div className='w-full px-[10px] text-base'>
             <div
-                className='w-full border p-[15px] flex flex-col items-center cursor-pointer'
+                className={clsx('w-full p-[15px] flex flex-col items-center cursor-pointer', !wishlist && 'border border-gray-300 rounded-lg')}
                 onClick={() => navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData.title}`)}
                 onMouseEnter={(e) => {
                     e.stopPropagation()
@@ -106,7 +130,11 @@ const Product = ({ productData, isNew, normal }) => {
                             ? <span title='Xóa khỏi giỏ hàng' onClick={(e) => handleNavigate(e, 'REMOVE_CART')}><SelectedOption check icon={<BsFillCartCheckFill color='green' size={20} />} /></span>
                             : <span title='Thêm vào giỏ hàng' onClick={(e) => handleNavigate(e, 'CART')}><SelectedOption icon={<BsCartPlusFill size={20} />} /></span>
                         }
-                        <span title='Thêm vào danh sách yêu thích' onClick={(e) => handleNavigate(e, 'FAVORITE')}><SelectedOption icon={<FaHeart />} size={20} /></span>
+                        {current?.wishlist?.some(el => el?._id === productData?._id)
+                            ? <span title='Xóa khỏi danh sách yêu thích' onClick={(e) => handleNavigate(e, 'REMOVE_FAVORITE')}><SelectedOption icon={<FaHeart size={20} color='red' />} /></span>
+                            : <span title='Thêm vào danh sách yêu thích' onClick={(e) => handleNavigate(e, 'FAVORITE')}><SelectedOption icon={<FaHeart size={20} />} /></span>
+                        }
+
                     </div>}
                     <img src={productData?.thumb || 'https://apollobattery.com.au/wp-content/uploads/2022/08/default-product-image.png'}
                         alt=''

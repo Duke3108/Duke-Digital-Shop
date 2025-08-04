@@ -68,7 +68,7 @@ const Personal = () => {
     }
 
     return (
-        <div className='relative w-full px-4'>
+        <div className='relative w-full px-4 py-2'>
             <header className='py-4 text-2xl font-semibold text-gray-800 border-b-2 border-gray-500'>
                 Thông tin cá nhân
             </header>

@@ -139,7 +139,7 @@ const Products = () => {
             <div className='flex justify-end m-auto my-4 w-main'>
                 <Pagination totalCount={products?.counts} />
             </div>
-            <div className='w-full h-[500px]'></div>
+            <div className='w-full h-[100px]'></div>
         </div>
     )
 }

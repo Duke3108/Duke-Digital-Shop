@@ -5,7 +5,7 @@ import BreadCrumb from '../../components/common/BreadCrumb'
 import ReactImageMagnify from 'react-image-magnify';
 import Button from '../../components/button/Button'
 import Slider from "react-slick"
-import { formatMoney, formatPrice } from '../../utils/helper';
+import { formatMoney } from '../../utils/helper';
 import SelectQuantity from '../../components/common/SelectQuantity';
 import { extraInfomation } from '../../utils/constants';
 import ExtraInfoItem from '../../components/product/ExtraInfoItem';
@@ -183,7 +183,6 @@ const DetailProduct = ({ quickView, data }) => {
         }
     }
 
-
     return (
         <div className='w-full'>
             {!quickView && <div className='h-[81px] flex justify-center items-center bg-gray-100'>
@@ -230,8 +229,8 @@ const DetailProduct = ({ quickView, data }) => {
 
                 <div className={clsx('flex flex-col gap-4 px-4', quickView ? 'w-1/2' : 'w-2/5')}>
                     <div className='flex items-center justify-between cursor-default'>
-                        <h2 className='text-[30px] font-semibold'>{`${formatMoney(formatPrice(currentProduct.price ? currentProduct.price : product?.price))} VNĐ`}</h2>
-                        <span className='text-sm text-main'>{`Kho: ${currentProduct.quantity ? currentProduct.quantity : product?.quantity}`}</span>
+                        <h2 className='text-[30px] font-semibold'>{`${formatMoney(currentProduct?.price ? currentProduct?.price : product?.price).length < 6 ? formatMoney(currentProduct?.price ? currentProduct?.price * 1000 : product?.price * 1000) : formatMoney(currentProduct?.price ? currentProduct?.price : product?.price)} VNĐ`}</h2>
+                        <span className='text-sm text-main'>{`Kho: ${currentProduct?.quantity ? currentProduct?.quantity : product?.quantity}`}</span>
                     </div>
                     <ul className='pl-5 text-sm text-gray-500 cursor-default list-square'>
                         {product?.description?.length > 1 && product?.description?.map((item, index) => (

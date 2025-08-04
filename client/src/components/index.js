@@ -37,5 +37,6 @@ export { default as Cart } from './cart/Cart'
 export { default as CartItem } from './cart/CartItem'
 export { default as Paypal } from './common/Paypal'
 export { default as PaymentSuccess } from './common/PaymentSuccess'
+export { default as CustomSelect } from './input/CustomSelect'
 
 

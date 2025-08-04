@@ -34,7 +34,7 @@ const DetailCart = () => {
 
 
     return (
-        <div className='relative w-full px-4'>
+        <div className='relative w-full px-4 py-2'>
             {!member && <div className='h-[80px] flex items-center justify-center bg-gray-100'>
                 <div className='flex flex-col gap-1 w-main'>
                     <h3 className='font-semibold uppercase'>Giỏ hàng</h3>
@@ -94,18 +94,22 @@ const DetailCart = () => {
                         </span>
                     </div>
                 ))}
-                <div className='flex flex-col items-end justify-center gap-2 m-8'>
-                    <span className='flex items-center gap-2 text-xl'>
-                        <span className='font-semibold'>Tổng tiền:</span>
-                        <span className='font-semibold'>{formatMoney(current?.cart.reduce((total, item) => total + (item?.price || item?.product?.price) * item.quantity, 0)) + ' VNĐ'}</span>
-                    </span>
-                    <span className='text-sm italic text-gray-500'>
-                        *Giá trên chưa bao gồm các khoản thuế, phí vận chuyển và giảm giá.
-                    </span>
-                    <Link to={`/${path.CHECKOUT}`} className='px-4 py-2 my-2 font-semibold text-white rounded-md bg-main'>
-                        Thanh toán
-                    </Link>
-                </div>
+                {current?.cart.length > 0
+                    ? <div className='flex flex-col items-end justify-center gap-2 m-8'>
+                        <span className='flex items-center gap-2 text-xl'>
+                            <span className='font-semibold'>Tổng tiền:</span>
+                            <span className='font-semibold'>{formatMoney(current?.cart.reduce((total, item) => total + (item?.price || item?.product?.price) * item.quantity, 0)) + ' VNĐ'}</span>
+                        </span>
+                        <span className='text-sm italic text-gray-500'>
+                            *Giá trên chưa bao gồm các khoản thuế, phí vận chuyển và giảm giá.
+                        </span>
+                        <Link to={`/${path.CHECKOUT}`} className='px-4 py-2 my-2 font-semibold text-white rounded-md bg-main'>
+                            Thanh toán
+                        </Link>
+                    </div>
+                    : <div className='flex items-center justify-center w-full h-[200px] text-2xl font-semibold text-gray-500'>
+                        Giỏ hàng trống
+                    </div>}
             </div>
         </div>
     )

@@ -235,13 +235,6 @@ export const memberSidebar = [
     {
         id: 4,
         type: 'single',
-        text: 'Đơn hàng',
-        path: `/${path.MEMBER}/${path.ORDER}`,
-        icon: <FaCartShopping size={20} />
-    },
-    {
-        id: 5,
-        type: 'single',
         text: 'Lịch sử mua hàng',
         path: `/${path.MEMBER}/${path.HISTORY}`,
         icon: <FaHistory size={20} />
@@ -250,7 +243,7 @@ export const memberSidebar = [
 
 export const roles = [
     {
-        code: 2904,
+        label: 2904,
         value: 'User',
     },
     {
@@ -267,5 +260,20 @@ export const blockStatus = [
     {
         code: false,
         value: 'Active',
+    },
+]
+
+export const orderStatus = [
+    {
+        label: 'Đã hủy',
+        value: 'Cancelled',
+    },
+    {
+        label: 'Đang chờ xử lý',
+        value: 'Processing',
+    },
+    {
+        label: 'Đã Thanh toán',
+        value: 'Succeed',
     },
 ]

@@ -3,6 +3,8 @@ import React, { memo, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import icons from '../../utils/icons'
 import { apiGetProducts } from '../../apis/product'
+import { NavLink } from 'react-router-dom'
+import { createSlug } from 'utils/helper'
 
 const { IoIosArrowForward } = icons
 
@@ -52,20 +54,22 @@ const Home = () => {
                             key={index}
                             className='w-[396px]'
                         >
-                            <div className='border flex p-4 gap-4 min-h-[190px]'>
+                            <NavLink
+                                to={createSlug(el.title)}
+                                className='border flex p-4 gap-4 min-h-[190px] cursor-pointer hover:shadow-lg transition-all duration-300 ease-in-out'>
                                 <img src={el?.image} alt='' className='w-[144px] flex-1 h-[129px] object-cover' />
                                 <div className='flex-1 text-gray-700'>
                                     <h4 className='font-semibold uppercase'>{el.title}</h4>
                                     <ul className='text-sm'>
                                         {el?.brand?.slice(0, 6).map((item, index) => (
-                                            <span key={index} className='flex items-center gap-1 text-gray-500'>
+                                            <span key={index} className='flex items-center gap-1 text-gray-500 hover:text-main w-fit'>
                                                 <IoIosArrowForward size={14} />
                                                 <li>{item}</li>
                                             </span>
                                         ))}
                                     </ul>
                                 </div>
-                            </div>
+                            </NavLink>
                         </div>
                     ))}
                 </div>

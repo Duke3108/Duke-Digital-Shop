@@ -104,6 +104,9 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
     const user = await User.findById(_id).select('-refreshToken -password').populate({
         path: 'cart.product',
         select: 'title price thumb category'
+    }).populate({
+        path: 'wishlist',
+        select: 'title price thumb category totalRatings'
     })
     return res.status(200).json({
         success: user ? true : false,
@@ -363,4 +366,26 @@ export const createUsers = asyncHandler(async (req, res) => {
         success: response ? true : false,
         createdUser: response ? response : 'Cannot create user'
     })
+})
+
+export const addWishlist = asyncHandler(async (req, res) => {
+    const { uid } = req.params
+    const { _id } = req.user
+    if (!_id || !uid) throw new Error('Missing inputs')
+    const user = await User.findById(_id)
+    const alreadyInWishlist = user.wishlist?.find(item => item.toString() === uid)
+    if (!alreadyInWishlist) {
+        const response = await User.findByIdAndUpdate(_id, { $push: { wishlist: uid } }, { new: true })
+        return res.status(200).json({
+            success: response ? true : false,
+            mes: response ? 'Add to wishlist successfully' : 'Cannot add to wishlist'
+        })
+    }
+    else {
+        const response = await User.findByIdAndUpdate(_id, { $pull: { wishlist: uid } }, { new: true })
+        return res.status(200).json({
+            success: response ? true : false,
+            mes: response ? 'Remove from wishlist successfully' : 'Cannot remove from wishlist'
+        })
+    }
 })
