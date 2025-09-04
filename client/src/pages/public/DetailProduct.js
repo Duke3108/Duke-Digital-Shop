@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { createSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { apiGetProduct, apiGetProducts } from '../../apis/product'
 import BreadCrumb from '../../components/common/BreadCrumb'
-import ReactImageMagnify from 'react-image-magnify';
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
 import Button from '../../components/button/Button'
 import Slider from "react-slick"
 import { formatMoney } from '../../utils/helper';
@@ -195,21 +196,13 @@ const DetailProduct = ({ quickView, data }) => {
             <div onClick={e => e.stopPropagation()} className={clsx('flex m-auto mt-4 bg-white w-main', quickView && 'max-w-[900px] max-h-[80vh] gap-16 p-8')}>
                 <div className={clsx('flex flex-col gap-4', quickView ? 'w-1/2' : 'w-2/5')}>
                     <div className='h-[458px] w-[458px] object-contain border'>
-                        <ReactImageMagnify {...{
-                            smallImage: {
-                                alt: 'Wristwatch by Ted Baker London',
-                                isFluidWidth: true,
-                                src: currentImage,
-                                width: 458,
-                                height: 458
-                            },
-                            largeImage: {
-                                src: currentImage,
-                                width: 1800,
-                                height: 1500
-                            }
-                        }} />
-
+                        <Zoom>
+                            <img
+                                alt="Product"
+                                src={currentImage}
+                                width="400"
+                            />
+                        </Zoom>
                     </div>
                     <div className='w-[458px]'>
                         <Slider className='flex items-center justify-center image-slider' {...settings}>
