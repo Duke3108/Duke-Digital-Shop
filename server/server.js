@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }))
 dbConnect()
 
 app.get('/', (req, res) => {
-    res.send('Duke Shop API is running 🚀');
+    res.send('Duke Shop API is running');
 });
 initRoutes(app)
 
