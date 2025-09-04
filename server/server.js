@@ -29,10 +29,6 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 dbConnect()
-
-app.get('/', (req, res) => {
-    res.send('Duke Shop API is running');
-});
 initRoutes(app)
 
 app.listen(port, () => {

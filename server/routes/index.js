@@ -10,6 +10,9 @@ import { errHandler, notFound } from "../middlewares/errorHandler.js";
 import insertRouter from "./insert.js";
 
 const initRoutes = (app) => {
+    app.get('/', (req, res) => {
+        res.send('Duke Shop API is running');
+    });
     app.use('/api/user', userRouter)
     app.use('/api/product', productRouter)
     app.use('/api/prodcate', productCategoryRouter)
