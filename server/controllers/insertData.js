@@ -3,7 +3,7 @@ import Category from "../models/productCategory.js"
 import asyncHandler from "express-async-handler";
 import { readFileSync } from 'fs';
 import cateData from '../data/categoryData.js'
-const data = JSON.parse(readFileSync(new URL('../../data/ecommerce.json', import.meta.url)));
+const data = JSON.parse(readFileSync(new URL('../data/ecommerce.json', import.meta.url)));
 import slugtify from 'slugify'
 
 const fn = async (product) => {
