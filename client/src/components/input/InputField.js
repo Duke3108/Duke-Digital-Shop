@@ -7,7 +7,7 @@ const InputField = ({ value, setValue, nameKey, type, style, invalidFields, setI
             {!isHideLabel && value && value?.trim() !== '' && <label className='absolute animate-slide-top-sm text-white top-0 left-3 px-1 block bg-transparent text-[10px]' htmlFor={nameKey}>{nameKey?.slice(0, 1).toUpperCase() + nameKey?.slice(1)}</label>}
             <input
                 type={type || 'text'}
-                className={clsx(' w-full px-4 py-2 mt-2 mb-1 bg-transparent border-2 border-white rounded-sm outline-none placeholder:text-sm placeholder:italic', style)}
+                className={clsx(' w-full px-4 py-2 mt-2 mb-1 bg-transparent border-2 border-black rounded-sm outline-none placeholder:text-sm placeholder:italic', style)}
                 placeholder={placeholder || nameKey?.slice(0, 1).toUpperCase() + nameKey?.slice(1)}
                 value={value}
                 onChange={e => setValue(prev => ({ ...prev, [nameKey]: e.target.value }))}
