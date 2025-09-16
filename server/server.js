@@ -6,11 +6,8 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 const allowedOrigins = [
-    "http://localhost:3000",
-    "https://duke-digital-shop.vercel.app",
-    process.env.CLIENT_URL
+    process.env.URL_CLIENT || 'http://localhost:3000',
 ];
-
 
 // CORS configuration
 const corsOptions = {
@@ -27,7 +24,6 @@ const corsOptions = {
 
 const app = express()
 app.use(cors(corsOptions))
-app.options("*", cors(corsOptions));
 const port = process.env.PORT || 8888
 app.use(cookieParser())
 app.use(express.json())
