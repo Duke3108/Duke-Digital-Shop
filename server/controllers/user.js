@@ -38,7 +38,7 @@ export const register = asyncHandler(async (req, res) => {
         await sendMail(data)
         return res.json({
             success: true,
-            mes: 'please check your email'
+            mes: 'Kiểm tra email của bạn để hoàn tất quá trình đăng ký'
         })
     }
 })

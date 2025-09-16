@@ -10,7 +10,7 @@ const FinalRegister = () => {
         if (status === 'failed') Swal.fire('Oops!', 'Đăng ký thất bại', 'error').then(() => {
             navigate(`/${path.LOGIN}`)
         })
-        if (status === 'success') Swal.fire('Oops!', 'Đăng ký thành công. Hãy đăng nhập', 'success').then(() => {
+        if (status === 'success') Swal.fire('Chúc mừng', 'Đăng ký thành công. Hãy đăng nhập', 'success').then(() => {
             navigate(`/${path.LOGIN}`)
         })
     }, [navigate, status])
