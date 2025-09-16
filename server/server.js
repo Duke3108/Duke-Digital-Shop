@@ -6,25 +6,36 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 const allowedOrigins = [
-    process.env.URL_CLIENT || 'http://localhost:3000',
+    'http://localhost:3000',
+    'https://duke-digital-shop.vercel.app',
 ];
 
-// CORS configuration
 const corsOptions = {
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 };
 
-const app = express()
-app.use(cors(corsOptions))
-const port = process.env.PORT || 8888
-app.use(cookieParser())
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-dbConnect()
-initRoutes(app)
+const app = express();
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // <-- handle preflight
+
+const port = process.env.PORT || 8888;
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+dbConnect();
+initRoutes(app);
 
 app.listen(port, () => {
-    console.log('Server is running on port: ' + port)
-})
+    console.log('Server is running on port: ' + port);
+});
