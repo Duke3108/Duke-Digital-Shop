@@ -120,7 +120,7 @@ const Login = () => {
         className='object-cover w-full h-full'
       />
       <div className='absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center'>
-        <div className='p-8 bg-transparent border-2 border-white backdrop-blur-[10px] flex flex-col items-center rounded-md min-w-[500px] text-white'>
+        <div className='p-8 bg-transparent flex flex-col items-center rounded-md min-w-[500px] border-2 border-black'>
           <h1 className='text-[28px] font-semibold text-main mb-8'>{isRegister ? 'ĐĂNG KÝ' : 'ĐĂNG NHẬP'}</h1>
           {isRegister && <InputField
             style='placeholder:text-white text-white'
