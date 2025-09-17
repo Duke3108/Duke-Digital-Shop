@@ -243,7 +243,7 @@ export const memberSidebar = [
 
 export const roles = [
     {
-        label: 2904,
+        code: 2904,
         value: 'User',
     },
     {
